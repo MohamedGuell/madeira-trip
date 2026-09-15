@@ -4,158 +4,193 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Madeira — 9-16 Oct · Planning Voyage</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <style>
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --bg:#faf8f5;--text:#2d2a26;--text-soft:#6b6560;
-    --card:#fff;--shadow:0 4px 20px rgba(0,0,0,.06);--shadow-hover:0 8px 32px rgba(0,0,0,.1);
-    --radius:16px;--radius-sm:10px;
-    --east:#e8d5c4;--north:#c8ddd0;--funchal:#d5d0e8;
-    --accent:#2a6f97;--green:#3a8558;--orange:#e8913a;--red:#d94f4f;
-    --font:'Segoe UI',system-ui,-apple-system,sans-serif;
-    --ease:cubic-bezier(.4,0,.2,1);
-  }
-  html{scroll-behavior:smooth}
-  body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
-  .container{max-width:540px;margin:0 auto;padding:0 14px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#faf8f5;--text:#2d2a26;--text-soft:#6b6560;
+  --card:#fff;--shadow:0 4px 20px rgba(0,0,0,.06);--shadow-hover:0 8px 32px rgba(0,0,0,.1);
+  --radius:16px;--radius-sm:10px;
+  --east:#e8d5c4;--north:#c8ddd0;--funchal:#d5d0e8;
+  --accent:#2a6f97;--green:#3a8558;--orange:#e8913a;--red:#d94f4f;
+  --font:'Segoe UI',system-ui,-apple-system,sans-serif;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+.container{max-width:540px;margin:0 auto;padding:0 14px}
 
-  /* ── Hero ── */
-  .hero{position:relative;overflow:hidden;background:linear-gradient(170deg,#1b4965,#468faf 50%,#62b6cb 75%,#bee9e8);padding:44px 0 0;text-align:center}
-  .hero::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:44px;background:var(--bg);border-radius:30px 30px 0 0}
-  .hero h1{font-size:2.2rem;font-weight:800;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.25)}
-  .hero p{font-size:.95rem;color:rgba(255,255,255,.8);margin-top:2px;font-weight:500}
-  .hero .dates-badge{display:inline-block;margin-top:10px;padding:6px 18px;background:rgba(255,255,255,.15);border-radius:999px;font-size:.82rem;font-weight:600;color:#fff;backdrop-filter:blur(6px);margin-bottom:50px}
+/* ── Hero ── */
+.hero{position:relative;overflow:hidden;background:linear-gradient(170deg,#1b4965,#468faf 50%,#62b6cb 75%,#bee9e8);padding:44px 0 0;text-align:center}
+.hero::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:44px;background:var(--bg);border-radius:30px 30px 0 0}
+.hero h1{font-size:2.2rem;font-weight:800;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.25)}
+.hero p{font-size:.95rem;color:rgba(255,255,255,.8);margin-top:2px;font-weight:500}
+.hero .dates-badge{display:inline-block;margin-top:10px;padding:6px 18px;background:rgba(255,255,255,.15);border-radius:999px;font-size:.82rem;font-weight:600;color:#fff;backdrop-filter:blur(6px)}
+.sync-badge{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 14px;background:rgba(0,0,0,.2);border-radius:999px;font-size:.7rem;font-weight:600;color:#fff;backdrop-filter:blur(6px);margin-bottom:50px;transition:all .3s}
+.sync-dot{width:8px;height:8px;border-radius:50%;transition:background .3s}
+.sync-dot.on{background:#4caf50;box-shadow:0 0 6px #4caf50}.sync-dot.off{background:#f44336}
 
-  /* ── Nav ── */
-  .nav{position:sticky;top:0;z-index:100;background:rgba(250,248,245,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(0,0,0,.05);padding:8px 0}
-  .nav .container{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
-  .nav .container::-webkit-scrollbar{display:none}
-  .pill{flex-shrink:0;padding:7px 13px;border-radius:999px;font-size:.72rem;font-weight:600;cursor:pointer;border:none;background:#eee;color:var(--text-soft);transition:all .2s var(--ease);white-space:nowrap}
-  .pill:hover,.pill.active{color:#fff;transform:scale(1.03)}
-  .pill[data-s="lodging"]{--c:#c97b3a}.pill[data-s="budget"]{--c:#3a8558}.pill[data-s="east"]{--c:#b08968}.pill[data-s="north"]{--c:#52796f}.pill[data-s="funchal"]{--c:#7b6fa6}.pill[data-s="notes"]{--c:#6b8cae}
-  .pill:hover,.pill.active{background:var(--c);box-shadow:0 3px 12px color-mix(in srgb,var(--c) 35%,transparent)}
+/* ── Nav ── */
+.nav{position:sticky;top:0;z-index:100;background:rgba(250,248,245,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(0,0,0,.05);padding:8px 0}
+.nav .container{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.nav .container::-webkit-scrollbar{display:none}
+.pill{flex-shrink:0;padding:7px 13px;border-radius:999px;font-size:.72rem;font-weight:600;cursor:pointer;border:none;background:#eee;color:var(--text-soft);transition:all .2s var(--ease);white-space:nowrap}
+.pill:hover,.pill.active{color:#fff;transform:scale(1.03)}
+.pill[data-s="lodging"]{--c:#c97b3a}.pill[data-s="budget"]{--c:#3a8558}.pill[data-s="east"]{--c:#b08968}.pill[data-s="north"]{--c:#52796f}.pill[data-s="funchal"]{--c:#7b6fa6}.pill[data-s="notes"]{--c:#6b8cae}.pill[data-s="prep"]{--c:#e07a5f}.pill[data-s="info"]{--c:#5b8c85}
+.pill:hover,.pill.active{background:var(--c);box-shadow:0 3px 12px color-mix(in srgb,var(--c) 35%,transparent)}
 
-  /* ── Section ── */
-  .section{padding:32px 0 20px}
-  .section-east{background:linear-gradient(180deg,var(--east),var(--bg))}
-  .section-north{background:linear-gradient(180deg,var(--north),var(--bg))}
-  .section-funchal{background:linear-gradient(180deg,var(--funchal),var(--bg))}
-  .sec-title{display:inline-flex;align-items:center;gap:7px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1.4px;color:var(--text-soft);margin-bottom:18px;padding:5px 13px;background:rgba(255,255,255,.55);border-radius:999px;backdrop-filter:blur(6px)}
-  .sec-title .dot{width:8px;height:8px;border-radius:50%}
+/* ── Section ── */
+.section{padding:32px 0 20px}
+.section-east{background:linear-gradient(180deg,var(--east),var(--bg))}
+.section-north{background:linear-gradient(180deg,var(--north),var(--bg))}
+.section-funchal{background:linear-gradient(180deg,var(--funchal),var(--bg))}
+.sec-title{display:inline-flex;align-items:center;gap:7px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1.4px;color:var(--text-soft);margin-bottom:18px;padding:5px 13px;background:rgba(255,255,255,.55);border-radius:999px;backdrop-filter:blur(6px)}
+.sec-title .dot{width:8px;height:8px;border-radius:50%}
 
-  /* ── Timeline + Day Card ── */
-  .timeline{position:relative;padding-left:34px}
-  .timeline::before{content:'';position:absolute;left:11px;top:0;bottom:0;width:2px;background:rgba(0,0,0,.07)}
-  .day-card{position:relative;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:18px;transition:box-shadow .3s,transform .3s}
-  .day-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-1px)}
-  .day-card::before{content:'';position:absolute;left:-28px;top:24px;width:11px;height:11px;border-radius:50%;border:3px solid var(--card);box-shadow:0 0 0 2px rgba(0,0,0,.1)}
-  .section-east .day-card::before{background:#b08968}.section-north .day-card::before{background:#52796f}.section-funchal .day-card::before{background:#7b6fa6}
-  .day-badge{display:inline-block;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:3px 10px;border-radius:999px;margin-bottom:8px}
-  .section-east .day-badge{background:#f0dcc8;color:#7a5a3a}.section-north .day-badge{background:#bdd5c8;color:#2f5045}.section-funchal .day-badge{background:#cec8e3;color:#4e4478}
-  .day-card h3{font-size:1.05rem;font-weight:700;margin-bottom:6px}
-  .act-list{list-style:none;display:flex;flex-direction:column;gap:6px}
-  .act-item{display:flex;align-items:center;gap:8px;font-size:.84rem;color:var(--text-soft);line-height:1.4;padding:4px 0}
-  .act-item .ico{flex-shrink:0;width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.9rem}
-  .section-east .ico{background:#f5e6d6}.section-north .ico{background:#d6eade}.section-funchal .ico{background:#e0daf0}
-  .act-item.done span:last-child{text-decoration:line-through;opacity:.5}
-  .act-check{width:18px;height:18px;border-radius:5px;border:2px solid #ccc;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.7rem;transition:all .2s;background:#fff}
-  .act-check.checked{background:var(--green);border-color:var(--green);color:#fff}
+/* ── Timeline + Day Card ── */
+.timeline{position:relative;padding-left:34px}
+.timeline::before{content:'';position:absolute;left:11px;top:0;bottom:0;width:2px;background:rgba(0,0,0,.07)}
+.day-card{position:relative;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:18px;transition:box-shadow .3s,transform .3s}
+.day-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-1px)}
+.day-card::before{content:'';position:absolute;left:-28px;top:24px;width:11px;height:11px;border-radius:50%;border:3px solid var(--card);box-shadow:0 0 0 2px rgba(0,0,0,.1)}
+.section-east .day-card::before{background:#b08968}.section-north .day-card::before{background:#52796f}.section-funchal .day-card::before{background:#7b6fa6}
+.day-badge{display:inline-block;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:3px 10px;border-radius:999px;margin-bottom:8px}
+.section-east .day-badge{background:#f0dcc8;color:#7a5a3a}.section-north .day-badge{background:#bdd5c8;color:#2f5045}.section-funchal .day-badge{background:#cec8e3;color:#4e4478}
+.day-card h3{font-size:1.05rem;font-weight:700;margin-bottom:6px}
+.act-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.act-item{display:flex;align-items:center;gap:8px;font-size:.84rem;color:var(--text-soft);line-height:1.4;padding:4px 0}
+.act-item .ico{flex-shrink:0;width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+.section-east .ico{background:#f5e6d6}.section-north .ico{background:#d6eade}.section-funchal .ico{background:#e0daf0}
+.act-item.done span:last-child{text-decoration:line-through;opacity:.5}
+.act-check{width:18px;height:18px;border-radius:5px;border:2px solid #ccc;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.7rem;transition:all .2s;background:#fff}
+.act-check.checked{background:var(--green);border-color:var(--green);color:#fff}
 
-  /* ── Alerts / Tips / Bonus ── */
-  .alert,.order-tip,.bonus-card{margin-top:10px;padding:10px 12px;border-radius:var(--radius-sm);font-size:.78rem;line-height:1.45;display:flex;align-items:flex-start;gap:8px}
-  .alert{background:#fff4e5;border-left:3px solid #f0a830;color:#7a5a1e}
-  .order-tip{background:#eef6ff;border-left:3px solid #5b9bd5;color:#2b5a85}
-  .bonus-card{background:linear-gradient(135deg,#f0fdf4,#e8f5e9);border:1px dashed #81c784;color:#2e7d32;flex-direction:column;gap:4px}
-  .bonus-card .bh{font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.7px}
-  .bonus-card ul{list-style:none;margin-top:4px}.bonus-card li{padding:2px 0;display:flex;gap:5px;align-items:flex-start}
+/* ── Alerts / Tips / Bonus ── */
+.alert,.order-tip,.bonus-card{margin-top:10px;padding:10px 12px;border-radius:var(--radius-sm);font-size:.78rem;line-height:1.45;display:flex;align-items:flex-start;gap:8px}
+.alert{background:#fff4e5;border-left:3px solid #f0a830;color:#7a5a1e}
+.order-tip{background:#eef6ff;border-left:3px solid #5b9bd5;color:#2b5a85}
+.bonus-card{background:linear-gradient(135deg,#f0fdf4,#e8f5e9);border:1px dashed #81c784;color:#2e7d32;flex-direction:column;gap:4px}
+.bonus-card .bh{font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.7px}
+.bonus-card ul{list-style:none;margin-top:4px}.bonus-card li{padding:2px 0;display:flex;gap:5px;align-items:flex-start}
 
-  /* ── Day custom note ── */
-  .day-note{margin-top:10px}
-  .day-note textarea{width:100%;border:1px dashed #d0d0d0;border-radius:var(--radius-sm);padding:8px 10px;font-family:var(--font);font-size:.78rem;resize:vertical;min-height:36px;background:#fefefe;color:var(--text);transition:border-color .2s}
-  .day-note textarea:focus{outline:none;border-color:var(--accent)}
-  .day-note textarea::placeholder{color:#bbb}
+/* ── Day note ── */
+.day-note{margin-top:10px}
+.day-note textarea{width:100%;border:1px dashed #d0d0d0;border-radius:var(--radius-sm);padding:8px 10px;font-family:var(--font);font-size:.78rem;resize:vertical;min-height:36px;background:#fefefe;color:var(--text);transition:border-color .2s}
+.day-note textarea:focus{outline:none;border-color:var(--accent)}
+.day-note textarea::placeholder{color:#bbb}
 
-  /* ═══ LODGING TABLE ═══ */
-  .lodging-section{padding:28px 0}
-  .lodging-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 16px;margin-bottom:18px;overflow:hidden}
-  .lodging-card h2{font-size:1rem;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
-  .lodging-card .sub{font-size:.75rem;color:var(--text-soft);margin-bottom:14px}
-  .lodge-period{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);padding:8px 0 6px;border-bottom:2px solid var(--accent);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+/* ═══ LODGING ═══ */
+.lodging-section{padding:28px 0}
+.lodging-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 16px;margin-bottom:18px;overflow:hidden}
+.lodging-card h2{font-size:1rem;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.lodging-card .sub{font-size:.75rem;color:var(--text-soft);margin-bottom:14px}
+.lodge-period{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);padding:8px 0 6px;border-bottom:2px solid var(--accent);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.lodge-opt{border:1px solid rgba(0,0,0,.06);border-radius:var(--radius-sm);padding:12px;margin-bottom:10px;background:#fafafa;transition:all .25s}
+.lodge-opt.selected{border-color:var(--green);background:#f0fdf4;box-shadow:0 0 0 2px rgba(58,133,88,.15)}
+.lodge-opt-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+.lodge-opt-name{font-weight:700;font-size:.88rem;display:flex;align-items:center;gap:6px}
+.lodge-opt-name a{color:var(--accent);text-decoration:none;font-weight:700}
+.lodge-opt-name a:hover{text-decoration:underline}
+.lodge-price{text-align:right}
+.lodge-price .total{font-size:.95rem;font-weight:700;color:var(--green);display:flex;align-items:center;gap:3px;justify-content:flex-end}
+.lodge-price .pp{font-size:.7rem;color:var(--text-soft)}
+.lodge-proscons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.lodge-pro,.lodge-con{font-size:.75rem;line-height:1.4;padding:6px 8px;border-radius:6px}
+.lodge-con{background:#fff5f5;color:#c0392b}.lodge-pro{background:#f0fdf4;color:#27ae60}
+.lodge-pro::before{content:'✅ '}.lodge-con::before{content:'⚠️ '}
+.lodge-votes{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.lodge-votes .vote-label{font-size:.68rem;font-weight:600;color:var(--text-soft);margin-right:2px}
+.vote-btn{padding:4px 10px;border-radius:999px;font-size:.7rem;font-weight:600;border:1.5px solid #ddd;cursor:pointer;transition:all .2s;background:#fff}
+.vote-btn:hover{transform:scale(1.05)}
+.vote-btn.oui{border-color:#66bb6a;color:#2e7d32;background:#e8f5e9}
+.vote-btn.bof{border-color:#ffa726;color:#e65100;background:#fff8e1}
+.vote-btn.non{border-color:#ef5350;color:#c62828;background:#ffebee}
+.vote-btn.active{font-weight:800;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.vote-btn.oui.active{background:#c8e6c9;border-width:2px}.vote-btn.bof.active{background:#ffe0b2;border-width:2px}.vote-btn.non.active{background:#ffcdd2;border-width:2px}
+.select-lodge-btn{display:block;width:100%;padding:8px;border:none;border-radius:8px;font-size:.78rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:8px}
+.select-lodge-btn{background:#e8f5e9;color:#2e7d32}.select-lodge-btn:hover{background:#c8e6c9}
+.select-lodge-btn.chosen{background:var(--green);color:#fff}
 
-  .lodge-opt{border:1px solid rgba(0,0,0,.06);border-radius:var(--radius-sm);padding:12px;margin-bottom:10px;background:#fafafa;transition:all .25s}
-  .lodge-opt.selected{border-color:var(--green);background:#f0fdf4;box-shadow:0 0 0 2px rgba(58,133,88,.15)}
-  .lodge-opt-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
-  .lodge-opt-name{font-weight:700;font-size:.88rem;display:flex;align-items:center;gap:6px}
-  .lodge-opt-name a{color:var(--accent);text-decoration:none;font-weight:700}
-  .lodge-opt-name a:hover{text-decoration:underline}
-  .lodge-price{text-align:right}
-  .lodge-price .total{font-size:.95rem;font-weight:700;color:var(--green)}
-  .lodge-price .pp{font-size:.7rem;color:var(--text-soft)}
+/* ═══ EDITABLE PRICE ═══ */
+.price-edit{width:55px;border:none;border-bottom:1.5px dashed #bbb;background:transparent;font-weight:700;font-size:inherit;color:inherit;text-align:right;font-family:inherit;padding:0 2px;transition:border-color .2s}
+.price-edit:focus{outline:none;border-bottom-color:var(--accent);background:rgba(42,111,151,.05);border-radius:3px 3px 0 0}
+.price-edit::-webkit-inner-spin-button{display:none}
+.price-edit[type=number]{-moz-appearance:textfield}
+.price-hint{font-size:.6rem;color:#aaa;margin-left:2px}
 
-  .lodge-proscons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
-  .lodge-pro,.lodge-con{font-size:.75rem;line-height:1.4;padding:6px 8px;border-radius:6px}
-  .lodge-con{background:#fff5f5;color:#c0392b}.lodge-pro{background:#f0fdf4;color:#27ae60}
-  .lodge-pro::before{content:'✅ '}.lodge-con::before{content:'⚠️ '}
+/* ═══ BUDGET ═══ */
+.budget-section{padding:28px 0}
+.budget-card{background:linear-gradient(135deg,#f0f7f2,#f8fcf9);border:1px solid rgba(0,0,0,.06);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 16px}
+.budget-card h2{font-size:1rem;font-weight:700;color:#3a7855;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.budget-card .sub{font-size:.75rem;color:var(--text-soft);margin-bottom:16px}
+.budget-strip{display:flex;border-radius:14px;overflow:hidden;margin-bottom:16px;background:#fff;border:1px solid rgba(0,0,0,.05)}
+.bs-block{flex:1;padding:14px 12px;text-align:center;border-right:1px solid rgba(0,0,0,.04)}
+.bs-block:last-child{border-right:none}
+.bs-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-soft);margin-bottom:2px}
+.bs-amt{font-size:1.4rem;font-weight:800;color:#2e7d32}
+.bs-amt.sec{font-size:1rem;color:#558b5e}
+.bs-sub{font-size:.65rem;color:var(--text-soft)}
+.budget-rows{display:flex;flex-direction:column;gap:8px}
+.b-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fff;border-radius:var(--radius-sm);border:1px solid rgba(0,0,0,.04)}
+.b-row .be{font-size:1.1rem;flex-shrink:0;width:28px;text-align:center}
+.b-row .bi{flex:1;min-width:0}.b-row .bn{font-size:.8rem;font-weight:600}.b-row .bd{font-size:.7rem;color:var(--text-soft)}
+.b-row .bp{text-align:right;white-space:nowrap}
+.b-row .bt{font-size:.88rem;font-weight:700;color:#2e7d32;display:flex;align-items:center;gap:2px;justify-content:flex-end}
+.b-row .bpp{font-size:.65rem;color:var(--text-soft)}
+.budget-note{margin-top:14px;font-size:.73rem;color:var(--text-soft);text-align:center;padding:10px;background:rgba(255,255,255,.6);border-radius:var(--radius-sm);line-height:1.5}
 
-  .lodge-votes{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-  .lodge-votes .vote-label{font-size:.68rem;font-weight:600;color:var(--text-soft);margin-right:2px}
-  .vote-btn{padding:4px 10px;border-radius:999px;font-size:.7rem;font-weight:600;border:1.5px solid #ddd;cursor:pointer;transition:all .2s;background:#fff}
-  .vote-btn:hover{transform:scale(1.05)}
-  .vote-btn.oui{border-color:#66bb6a;color:#2e7d32;background:#e8f5e9}
-  .vote-btn.bof{border-color:#ffa726;color:#e65100;background:#fff8e1}
-  .vote-btn.non{border-color:#ef5350;color:#c62828;background:#ffebee}
-  .vote-btn.active{font-weight:800;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-  .vote-btn.oui.active{background:#c8e6c9;border-width:2px}.vote-btn.bof.active{background:#ffe0b2;border-width:2px}.vote-btn.non.active{background:#ffcdd2;border-width:2px}
+/* ═══ PREP CHECKLIST ═══ */
+.prep-section{padding:28px 0}
+.prep-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 16px}
+.prep-card h2{font-size:1rem;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.prep-card .sub{font-size:.75rem;color:var(--text-soft);margin-bottom:14px}
+.prep-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+.prep-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-sm);font-size:.84rem;transition:background .2s;cursor:pointer}
+.prep-item:hover{background:rgba(0,0,0,.02)}
+.prep-item.done{opacity:.5}
+.prep-item.done .prep-text{text-decoration:line-through}
+.prep-check{width:20px;height:20px;border-radius:6px;border:2px solid #ccc;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;transition:all .2s;background:#fff;cursor:pointer}
+.prep-check.checked{background:var(--green);border-color:var(--green);color:#fff}
+.prep-cat{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);padding:10px 0 4px;margin-top:6px}
 
-  .select-lodge-btn{display:block;width:100%;padding:8px;border:none;border-radius:8px;font-size:.78rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:8px}
-  .select-lodge-btn{background:#e8f5e9;color:#2e7d32}.select-lodge-btn:hover{background:#c8e6c9}
-  .select-lodge-btn.chosen{background:var(--green);color:#fff}
+/* ═══ INFO ═══ */
+.info-section{padding:28px 0}
+.info-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 16px}
+.info-card h2{font-size:1rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.info-item{padding:10px;border-radius:var(--radius-sm);background:#f8f8f8;font-size:.78rem;line-height:1.4}
+.info-item .ii-icon{font-size:1.1rem;display:block;margin-bottom:3px}
+.info-item .ii-label{font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-soft);display:block}
+.info-item .ii-value{font-weight:600;color:var(--text)}
+.info-meteo{margin-top:12px;padding:14px;background:linear-gradient(135deg,#e3f2fd,#f3e5f5);border-radius:var(--radius-sm);font-size:.8rem;line-height:1.5}
 
-  /* ═══ BUDGET ═══ */
-  .budget-section{padding:28px 0}
-  .budget-card{background:linear-gradient(135deg,#f0f7f2,#f8fcf9);border:1px solid rgba(0,0,0,.06);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 16px}
-  .budget-card h2{font-size:1rem;font-weight:700;color:#3a7855;margin-bottom:4px;display:flex;align-items:center;gap:8px}
-  .budget-card .sub{font-size:.75rem;color:var(--text-soft);margin-bottom:16px}
-  .budget-strip{display:flex;border-radius:14px;overflow:hidden;margin-bottom:16px;background:#fff;border:1px solid rgba(0,0,0,.05)}
-  .bs-block{flex:1;padding:14px 12px;text-align:center;border-right:1px solid rgba(0,0,0,.04)}
-  .bs-block:last-child{border-right:none}
-  .bs-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-soft);margin-bottom:2px}
-  .bs-amt{font-size:1.4rem;font-weight:800;color:#2e7d32}
-  .bs-amt.sec{font-size:1rem;color:#558b5e}
-  .bs-sub{font-size:.65rem;color:var(--text-soft)}
-  .budget-rows{display:flex;flex-direction:column;gap:8px}
-  .b-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fff;border-radius:var(--radius-sm);border:1px solid rgba(0,0,0,.04)}
-  .b-row .be{font-size:1.1rem;flex-shrink:0;width:28px;text-align:center}
-  .b-row .bi{flex:1;min-width:0}.b-row .bn{font-size:.8rem;font-weight:600}.b-row .bd{font-size:.7rem;color:var(--text-soft)}
-  .b-row .bp{text-align:right;white-space:nowrap}
-  .b-row .bt{font-size:.88rem;font-weight:700;color:#2e7d32}.b-row .bpp{font-size:.65rem;color:var(--text-soft)}
-  .budget-note{margin-top:14px;font-size:.73rem;color:var(--text-soft);text-align:center;padding:10px;background:rgba(255,255,255,.6);border-radius:var(--radius-sm);line-height:1.5}
+/* ═══ NOTES ═══ */
+.notes-section{padding:28px 0}
+.notes-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 16px;margin-bottom:14px}
+.notes-card h2{font-size:1rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.person-note{margin-bottom:14px}
+.person-note label{display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:700;margin-bottom:6px}
+.person-note label .avatar{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;font-weight:800}
+.av-v{background:#5b9bd5}.av-m{background:#e07a5f}.av-c{background:#81b29a}
+.person-note textarea{width:100%;border:1px solid #e0e0e0;border-radius:var(--radius-sm);padding:10px;font-family:var(--font);font-size:.8rem;resize:vertical;min-height:60px;transition:border-color .2s;background:#fefefe}
+.person-note textarea:focus{outline:none;border-color:var(--accent)}
 
-  /* ═══ NOTES / COMMENTS ═══ */
-  .notes-section{padding:28px 0}
-  .notes-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 16px;margin-bottom:14px}
-  .notes-card h2{font-size:1rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-  .person-note{margin-bottom:14px}
-  .person-note label{display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:700;margin-bottom:6px}
-  .person-note label .avatar{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;font-weight:800}
-  .av-v{background:#5b9bd5}.av-m{background:#e07a5f}.av-c{background:#81b29a}
-  .person-note textarea{width:100%;border:1px solid #e0e0e0;border-radius:var(--radius-sm);padding:10px;font-family:var(--font);font-size:.8rem;resize:vertical;min-height:60px;transition:border-color .2s;background:#fefefe}
-  .person-note textarea:focus{outline:none;border-color:var(--accent)}
+/* ═══ TOOLBAR ═══ */
+.toolbar{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-top:1px solid rgba(0,0,0,.06);padding:8px 12px;display:flex;gap:8px;justify-content:center;align-items:center}
+.tb-btn{padding:8px 16px;border-radius:999px;font-size:.75rem;font-weight:600;border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
+.tb-btn.reset{background:#eee;color:var(--text-soft)}.tb-btn.reset:hover{background:#ddd}
+.tb-sync{font-size:.7rem;font-weight:600;display:flex;align-items:center;gap:5px;color:var(--text-soft);padding:6px 14px;background:rgba(0,0,0,.03);border-radius:999px}
+.tb-sync .sync-d{width:7px;height:7px;border-radius:50%;transition:background .3s}
+.tb-sync .sync-d.on{background:#4caf50}.tb-sync .sync-d.off{background:#f44336}
+.save-toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(20px);background:#2e7d32;color:#fff;padding:10px 24px;border-radius:999px;font-size:.82rem;font-weight:600;opacity:0;transition:all .3s var(--ease);z-index:300;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+.save-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-  /* ═══ TOOLBAR ═══ */
-  .toolbar{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-top:1px solid rgba(0,0,0,.06);padding:8px 12px;display:flex;gap:8px;justify-content:center}
-  .tb-btn{padding:8px 16px;border-radius:999px;font-size:.75rem;font-weight:600;border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
-  .tb-btn.save{background:var(--green);color:#fff}.tb-btn.save:hover{background:#2d6e48}
-  .tb-btn.share{background:#5b9bd5;color:#fff}.tb-btn.share:hover{background:#4a87bd}
-  .tb-btn.reset{background:#eee;color:var(--text-soft)}.tb-btn.reset:hover{background:#ddd}
-  .save-toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(20px);background:#2e7d32;color:#fff;padding:10px 24px;border-radius:999px;font-size:.82rem;font-weight:600;opacity:0;transition:all .3s var(--ease);z-index:300;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.2)}
-  .save-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{text-align:center;padding:30px 16px 80px;font-size:.75rem;color:var(--text-soft)}
+footer .heart{color:#e07a5f}
 
-  footer{text-align:center;padding:30px 16px 80px;font-size:.75rem;color:var(--text-soft)}
-  footer .heart{color:#e07a5f}
-
-  @media(min-width:520px){.container{padding:0 22px}}
-  @media(min-width:768px){.container{max-width:600px}}
+@media(min-width:520px){.container{padding:0 22px}}
+@media(min-width:768px){.container{max-width:600px}}
 </style>
 </head>
 <body>
@@ -165,6 +200,7 @@
   <h1>🏝️ Madeira</h1>
   <p>Vincent · Momo · Caro</p>
   <div class="dates-badge">📅 9 → 16 Octobre 2026 · 3 voyageurs</div>
+  <div class="sync-badge"><span class="sync-dot off" id="heroSync"></span> <span id="heroSyncText">Connexion…</span></div>
 </header>
 
 <!-- ═══ NAV ═══ -->
@@ -175,6 +211,8 @@
     <button class="pill" data-s="east" onclick="go('east')">🏔️ Est</button>
     <button class="pill" data-s="north" onclick="go('north')">🌿 Nord</button>
     <button class="pill" data-s="funchal" onclick="go('funchal')">🏘️ Funchal</button>
+    <button class="pill" data-s="prep" onclick="go('prep')">🧳 Prép.</button>
+    <button class="pill" data-s="info" onclick="go('info')">ℹ️ Infos</button>
     <button class="pill" data-s="notes" onclick="go('notes')">💬 Notes</button>
   </div>
 </nav>
@@ -184,7 +222,7 @@
   <div class="container">
     <div class="lodging-card">
       <h2>🏠 Logements — Votez & Choisissez</h2>
-      <p class="sub">Cliquez sur Oui / Bof / Non pour voter. Cliquez « Choisir » pour sélectionner l'option du groupe.</p>
+      <p class="sub">Votez Oui / Bof / Non. Cliquez les prix pour les modifier. Tout est synchronisé en temps réel ✨</p>
 
       <!-- ── Étape 1: 9→12 oct ── -->
       <div class="lodge-period">
@@ -195,7 +233,10 @@
       <div class="lodge-opt" data-lodge="machico-1">
         <div class="lodge-opt-header">
           <div class="lodge-opt-name">🏷️ <a href="#" onclick="return false">Option 01</a></div>
-          <div class="lodge-price"><div class="total">230 €</div><div class="pp">77 € / pers.</div></div>
+          <div class="lodge-price">
+            <div class="total"><input type="number" class="price-edit" value="230" data-lp="machico-1"> €</div>
+            <div class="pp" data-pp="machico-1">77 € / pers.</div>
+          </div>
         </div>
         <div class="lodge-proscons">
           <div class="lodge-con">Le confort n'a pas l'air optimal d'après les commentaires (studio où tout est dans la même pièce)</div>
@@ -203,21 +244,21 @@
         </div>
         <div class="lodge-votes">
           <span class="vote-label">Vincent</span>
-          <button class="vote-btn oui active" onclick="vote(this,'machico-1','vincent','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'machico-1','vincent','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'machico-1','vincent','non')">Non</button>
+          <button class="vote-btn oui active" onclick="vote('machico-1','vincent','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('machico-1','vincent','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('machico-1','vincent','non')">Non</button>
           <span style="width:8px"></span>
           <span class="vote-label">Momo</span>
-          <button class="vote-btn oui" onclick="vote(this,'machico-1','momo','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'machico-1','momo','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'machico-1','momo','non')">Non</button>
+          <button class="vote-btn oui" onclick="vote('machico-1','momo','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('machico-1','momo','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('machico-1','momo','non')">Non</button>
           <span style="width:8px"></span>
           <span class="vote-label">Caro</span>
-          <button class="vote-btn oui" onclick="vote(this,'machico-1','caro','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'machico-1','caro','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'machico-1','caro','non')">Non</button>
+          <button class="vote-btn oui" onclick="vote('machico-1','caro','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('machico-1','caro','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('machico-1','caro','non')">Non</button>
         </div>
-        <button class="select-lodge-btn" onclick="selectLodge('etape1','machico-1',230)">✓ Choisir cette option</button>
+        <button class="select-lodge-btn" onclick="selectLodge('etape1','machico-1')">✓ Choisir cette option</button>
       </div>
 
       <!-- ── Étape 2: 12→15 oct ── -->
@@ -229,63 +270,72 @@
       <div class="lodge-opt" data-lodge="sv-1">
         <div class="lodge-opt-header">
           <div class="lodge-opt-name">🏷️ <a href="#" onclick="return false">Option 01</a> — São Vicente</div>
-          <div class="lodge-price"><div class="total">273 €</div><div class="pp">91 € / pers.</div></div>
+          <div class="lodge-price">
+            <div class="total"><input type="number" class="price-edit" value="273" data-lp="sv-1"> €</div>
+            <div class="pp" data-pp="sv-1">91 € / pers.</div>
+          </div>
         </div>
         <div class="lodge-proscons">
-          <div class="lodge-con">Salle de bain et toilettes communes (beaucoup d'options comme ça, même plus chères)</div>
-          <div class="lodge-pro">Paiement à partir du 05/10. Le cadre a l'air sublime et les chambres ont l'air très bien</div>
+          <div class="lodge-con">Salle de bain et toilettes communes</div>
+          <div class="lodge-pro">Paiement à partir du 05/10. Cadre sublime, chambres très bien</div>
         </div>
         <div class="lodge-votes">
           <span class="vote-label">Vincent</span>
-          <button class="vote-btn oui" onclick="vote(this,'sv-1','vincent','oui')">Oui</button>
-          <button class="vote-btn bof active" onclick="vote(this,'sv-1','vincent','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'sv-1','vincent','non')">Non</button>
+          <button class="vote-btn oui" onclick="vote('sv-1','vincent','oui')">Oui</button>
+          <button class="vote-btn bof active" onclick="vote('sv-1','vincent','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('sv-1','vincent','non')">Non</button>
           <span style="width:8px"></span>
           <span class="vote-label">Momo</span>
-          <button class="vote-btn oui" onclick="vote(this,'sv-1','momo','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'sv-1','momo','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'sv-1','momo','non')">Non</button>
+          <button class="vote-btn oui" onclick="vote('sv-1','momo','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('sv-1','momo','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('sv-1','momo','non')">Non</button>
           <span style="width:8px"></span>
           <span class="vote-label">Caro</span>
-          <button class="vote-btn oui" onclick="vote(this,'sv-1','caro','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'sv-1','caro','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'sv-1','caro','non')">Non</button>
+          <button class="vote-btn oui" onclick="vote('sv-1','caro','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('sv-1','caro','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('sv-1','caro','non')">Non</button>
         </div>
-        <button class="select-lodge-btn" onclick="selectLodge('etape2','sv-1',273)">✓ Choisir cette option</button>
+        <button class="select-lodge-btn" onclick="selectLodge('etape2','sv-1')">✓ Choisir cette option</button>
       </div>
 
       <div class="lodge-opt" data-lodge="pd-2">
         <div class="lodge-opt-header">
           <div class="lodge-opt-name">🏷️ <a href="#" onclick="return false">Option 02</a> — Ponta Delgada</div>
-          <div class="lodge-price"><div class="total">254 €</div><div class="pp">85 € / pers.</div></div>
+          <div class="lodge-price">
+            <div class="total"><input type="number" class="price-edit" value="254" data-lp="pd-2"> €</div>
+            <div class="pp" data-pp="pd-2">85 € / pers.</div>
+          </div>
         </div>
         <div class="lodge-proscons">
           <div class="lodge-con">Très populaire sur Airbnb</div>
-          <div class="lodge-pro">Le cadre a l'air incroyable. Logement entier</div>
+          <div class="lodge-pro">Cadre incroyable. Logement entier</div>
         </div>
         <div class="lodge-votes">
           <span class="vote-label">Vincent</span>
-          <button class="vote-btn oui active" onclick="vote(this,'pd-2','vincent','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'pd-2','vincent','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'pd-2','vincent','non')">Non</button>
+          <button class="vote-btn oui active" onclick="vote('pd-2','vincent','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('pd-2','vincent','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('pd-2','vincent','non')">Non</button>
           <span style="width:8px"></span>
           <span class="vote-label">Momo</span>
-          <button class="vote-btn oui" onclick="vote(this,'pd-2','momo','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'pd-2','momo','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'pd-2','momo','non')">Non</button>
+          <button class="vote-btn oui" onclick="vote('pd-2','momo','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('pd-2','momo','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('pd-2','momo','non')">Non</button>
           <span style="width:8px"></span>
           <span class="vote-label">Caro</span>
-          <button class="vote-btn oui" onclick="vote(this,'pd-2','caro','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'pd-2','caro','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'pd-2','caro','non')">Non</button>
+          <button class="vote-btn oui" onclick="vote('pd-2','caro','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('pd-2','caro','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('pd-2','caro','non')">Non</button>
         </div>
-        <button class="select-lodge-btn" onclick="selectLodge('etape2','pd-2',254)">✓ Choisir cette option</button>
+        <button class="select-lodge-btn" onclick="selectLodge('etape2','pd-2')">✓ Choisir cette option</button>
       </div>
 
       <div class="lodge-opt" data-lodge="pd-3">
         <div class="lodge-opt-header">
           <div class="lodge-opt-name">🏷️ <a href="#" onclick="return false">Option 03</a> — Ponta Delgada</div>
-          <div class="lodge-price"><div class="total">273 €</div><div class="pp">91 € / pers.</div></div>
+          <div class="lodge-price">
+            <div class="total"><input type="number" class="price-edit" value="273" data-lp="pd-3"> €</div>
+            <div class="pp" data-pp="pd-3">91 € / pers.</div>
+          </div>
         </div>
         <div class="lodge-proscons">
           <div class="lodge-con">Moins dreamy que les deux premiers</div>
@@ -293,21 +343,21 @@
         </div>
         <div class="lodge-votes">
           <span class="vote-label">Vincent</span>
-          <button class="vote-btn oui active" onclick="vote(this,'pd-3','vincent','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'pd-3','vincent','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'pd-3','vincent','non')">Non</button>
+          <button class="vote-btn oui active" onclick="vote('pd-3','vincent','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('pd-3','vincent','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('pd-3','vincent','non')">Non</button>
           <span style="width:8px"></span>
           <span class="vote-label">Momo</span>
-          <button class="vote-btn oui" onclick="vote(this,'pd-3','momo','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'pd-3','momo','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'pd-3','momo','non')">Non</button>
+          <button class="vote-btn oui" onclick="vote('pd-3','momo','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('pd-3','momo','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('pd-3','momo','non')">Non</button>
           <span style="width:8px"></span>
           <span class="vote-label">Caro</span>
-          <button class="vote-btn oui" onclick="vote(this,'pd-3','caro','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'pd-3','caro','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'pd-3','caro','non')">Non</button>
+          <button class="vote-btn oui" onclick="vote('pd-3','caro','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('pd-3','caro','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('pd-3','caro','non')">Non</button>
         </div>
-        <button class="select-lodge-btn" onclick="selectLodge('etape2','pd-3',273)">✓ Choisir cette option</button>
+        <button class="select-lodge-btn" onclick="selectLodge('etape2','pd-3')">✓ Choisir cette option</button>
       </div>
 
       <!-- ── Étape 3: 15→16 oct ── -->
@@ -319,7 +369,10 @@
       <div class="lodge-opt" data-lodge="fun-1">
         <div class="lodge-opt-header">
           <div class="lodge-opt-name">🏷️ <a href="#" onclick="return false">Option 01</a></div>
-          <div class="lodge-price"><div class="total">70 €</div><div class="pp">23 € / pers.</div></div>
+          <div class="lodge-price">
+            <div class="total"><input type="number" class="price-edit" value="70" data-lp="fun-1"> €</div>
+            <div class="pp" data-pp="fun-1">23 € / pers.</div>
+          </div>
         </div>
         <div class="lodge-proscons">
           <div class="lodge-con">Chambre classique en auberge de jeunesse</div>
@@ -327,27 +380,30 @@
         </div>
         <div class="lodge-votes">
           <span class="vote-label">Vincent</span>
-          <button class="vote-btn oui active" onclick="vote(this,'fun-1','vincent','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'fun-1','vincent','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'fun-1','vincent','non')">Non</button>
+          <button class="vote-btn oui active" onclick="vote('fun-1','vincent','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('fun-1','vincent','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('fun-1','vincent','non')">Non</button>
           <span style="width:8px"></span>
           <span class="vote-label">Momo</span>
-          <button class="vote-btn oui" onclick="vote(this,'fun-1','momo','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'fun-1','momo','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'fun-1','momo','non')">Non</button>
+          <button class="vote-btn oui" onclick="vote('fun-1','momo','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('fun-1','momo','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('fun-1','momo','non')">Non</button>
           <span style="width:8px"></span>
           <span class="vote-label">Caro</span>
-          <button class="vote-btn oui" onclick="vote(this,'fun-1','caro','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'fun-1','caro','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'fun-1','caro','non')">Non</button>
+          <button class="vote-btn oui" onclick="vote('fun-1','caro','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('fun-1','caro','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('fun-1','caro','non')">Non</button>
         </div>
-        <button class="select-lodge-btn" onclick="selectLodge('etape3','fun-1',70)">✓ Choisir cette option</button>
+        <button class="select-lodge-btn" onclick="selectLodge('etape3','fun-1')">✓ Choisir cette option</button>
       </div>
 
       <div class="lodge-opt" data-lodge="fun-2">
         <div class="lodge-opt-header">
           <div class="lodge-opt-name">🏷️ <a href="#" onclick="return false">Option 02</a></div>
-          <div class="lodge-price"><div class="total">108 €</div><div class="pp">36 € / pers.</div></div>
+          <div class="lodge-price">
+            <div class="total"><input type="number" class="price-edit" value="108" data-lp="fun-2"> €</div>
+            <div class="pp" data-pp="fun-2">36 € / pers.</div>
+          </div>
         </div>
         <div class="lodge-proscons">
           <div class="lodge-con">RAS</div>
@@ -355,27 +411,30 @@
         </div>
         <div class="lodge-votes">
           <span class="vote-label">Vincent</span>
-          <button class="vote-btn oui active" onclick="vote(this,'fun-2','vincent','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'fun-2','vincent','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'fun-2','vincent','non')">Non</button>
+          <button class="vote-btn oui active" onclick="vote('fun-2','vincent','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('fun-2','vincent','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('fun-2','vincent','non')">Non</button>
           <span style="width:8px"></span>
           <span class="vote-label">Momo</span>
-          <button class="vote-btn oui" onclick="vote(this,'fun-2','momo','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'fun-2','momo','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'fun-2','momo','non')">Non</button>
+          <button class="vote-btn oui" onclick="vote('fun-2','momo','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('fun-2','momo','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('fun-2','momo','non')">Non</button>
           <span style="width:8px"></span>
           <span class="vote-label">Caro</span>
-          <button class="vote-btn oui" onclick="vote(this,'fun-2','caro','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'fun-2','caro','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'fun-2','caro','non')">Non</button>
+          <button class="vote-btn oui" onclick="vote('fun-2','caro','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('fun-2','caro','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('fun-2','caro','non')">Non</button>
         </div>
-        <button class="select-lodge-btn" onclick="selectLodge('etape3','fun-2',108)">✓ Choisir cette option</button>
+        <button class="select-lodge-btn" onclick="selectLodge('etape3','fun-2')">✓ Choisir cette option</button>
       </div>
 
       <div class="lodge-opt" data-lodge="fun-3">
         <div class="lodge-opt-header">
           <div class="lodge-opt-name">🏷️ <a href="#" onclick="return false">Option 03</a> ❤️</div>
-          <div class="lodge-price"><div class="total">180 €</div><div class="pp">60 € / pers.</div></div>
+          <div class="lodge-price">
+            <div class="total"><input type="number" class="price-edit" value="180" data-lp="fun-3"> €</div>
+            <div class="pp" data-pp="fun-3">60 € / pers.</div>
+          </div>
         </div>
         <div class="lodge-proscons">
           <div class="lodge-con">2 lits simples, quelqu'un devra dormir sur le canapé</div>
@@ -383,21 +442,21 @@
         </div>
         <div class="lodge-votes">
           <span class="vote-label">Vincent</span>
-          <button class="vote-btn oui active" onclick="vote(this,'fun-3','vincent','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'fun-3','vincent','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'fun-3','vincent','non')">Non</button>
+          <button class="vote-btn oui active" onclick="vote('fun-3','vincent','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('fun-3','vincent','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('fun-3','vincent','non')">Non</button>
           <span style="width:8px"></span>
           <span class="vote-label">Momo</span>
-          <button class="vote-btn oui" onclick="vote(this,'fun-3','momo','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'fun-3','momo','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'fun-3','momo','non')">Non</button>
+          <button class="vote-btn oui" onclick="vote('fun-3','momo','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('fun-3','momo','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('fun-3','momo','non')">Non</button>
           <span style="width:8px"></span>
           <span class="vote-label">Caro</span>
-          <button class="vote-btn oui" onclick="vote(this,'fun-3','caro','oui')">Oui</button>
-          <button class="vote-btn bof" onclick="vote(this,'fun-3','caro','bof')">Bof</button>
-          <button class="vote-btn non" onclick="vote(this,'fun-3','caro','non')">Non</button>
+          <button class="vote-btn oui" onclick="vote('fun-3','caro','oui')">Oui</button>
+          <button class="vote-btn bof" onclick="vote('fun-3','caro','bof')">Bof</button>
+          <button class="vote-btn non" onclick="vote('fun-3','caro','non')">Non</button>
         </div>
-        <button class="select-lodge-btn" onclick="selectLodge('etape3','fun-3',180)">✓ Choisir cette option</button>
+        <button class="select-lodge-btn" onclick="selectLodge('etape3','fun-3')">✓ Choisir cette option</button>
       </div>
 
     </div>
@@ -409,7 +468,7 @@
   <div class="container">
     <div class="budget-card">
       <h2>💰 Budget · 3 Voyageurs</h2>
-      <p class="sub">Se met à jour automatiquement selon les logements choisis</p>
+      <p class="sub">Cliquez sur les montants pour les modifier. Tout se recalcule et se synchronise ✏️</p>
 
       <div class="budget-strip">
         <div class="bs-block">
@@ -431,27 +490,27 @@
         </div>
         <div class="b-row">
           <div class="be">🚗</div>
-          <div class="bi"><div class="bn">Voiture + essence</div><div class="bd">7 jours · 1 voiture catégorie B</div></div>
-          <div class="bp"><div class="bt">~310 €</div><div class="bpp">103 € / pers.</div></div>
+          <div class="bi"><div class="bn">Voiture (réservée ✅)</div><div class="bd">7 jours · réservation confirmée</div></div>
+          <div class="bp"><div class="bt"><input type="number" class="price-edit" value="350" data-bp="car"> €</div><div class="bpp" data-bpp="car">117 € / pers.</div></div>
         </div>
         <div class="b-row">
           <div class="be">🍽️</div>
           <div class="bi"><div class="bn">Repas & boissons</div><div class="bd">~25 €/pers./jour · restos + courses</div></div>
-          <div class="bp"><div class="bt">~600 €</div><div class="bpp">200 € / pers.</div></div>
+          <div class="bp"><div class="bt"><input type="number" class="price-edit" value="600" data-bp="food"> €</div><div class="bpp" data-bpp="food">200 € / pers.</div></div>
         </div>
         <div class="b-row">
           <div class="be">🎟️</div>
           <div class="bi"><div class="bn">Activités</div><div class="bd">Téléphérique, carreiros, piscines…</div></div>
-          <div class="bp"><div class="bt">~210 €</div><div class="bpp">70 € / pers.</div></div>
+          <div class="bp"><div class="bt"><input type="number" class="price-edit" value="210" data-bp="activities"> €</div><div class="bpp" data-bpp="activities">70 € / pers.</div></div>
         </div>
         <div class="b-row">
           <div class="be">🧃</div>
           <div class="bi"><div class="bn">Divers</div><div class="bd">Poncha, pastéis, souvenirs, parking</div></div>
-          <div class="bp"><div class="bt">~110 €</div><div class="bpp">37 € / pers.</div></div>
+          <div class="bp"><div class="bt"><input type="number" class="price-edit" value="110" data-bp="misc"> €</div><div class="bpp" data-bpp="misc">37 € / pers.</div></div>
         </div>
       </div>
 
-      <div class="budget-note">💡 <strong>Hors vols.</strong> Les randonnées sont gratuites. Le budget se recalcule dès que vous choisissez un logement ci-dessus.</div>
+      <div class="budget-note">💡 <strong>Hors vols.</strong> Cliquez sur n'importe quel montant pour l'ajuster. Les randonnées sont gratuites.</div>
     </div>
   </div>
 </section>
@@ -581,6 +640,67 @@
   </div>
 </section>
 
+<!-- ═══ CHECKLIST PRÉ-DÉPART ═══ -->
+<section class="prep-section" id="prep">
+  <div class="container">
+    <div class="prep-card">
+      <h2>🧳 Checklist pré-départ</h2>
+      <p class="sub">Cochez au fur et à mesure. Synchronisé entre tous !</p>
+
+      <div class="prep-cat">📄 Documents</div>
+      <ul class="prep-list">
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-1"><div class="prep-check"></div><span class="prep-text">🛂 Passeport ou Carte d'identité valide</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-2"><div class="prep-check"></div><span class="prep-text">🚗 Permis de conduire</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-3"><div class="prep-check"></div><span class="prep-text">📋 Confirmation réservation voiture (350 €)</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-4"><div class="prep-check"></div><span class="prep-text">🏠 Confirmations hébergements (Airbnb)</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-5"><div class="prep-check"></div><span class="prep-text">✈️ Billets d'avion / cartes d'embarquement</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-6"><div class="prep-check"></div><span class="prep-text">🏥 Carte européenne d'assurance maladie (CEAM)</span></li>
+      </ul>
+
+      <div class="prep-cat">👕 Bagages essentiels</div>
+      <ul class="prep-list">
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-10"><div class="prep-check"></div><span class="prep-text">🥾 Chaussures de randonnée (5 randos prévues !)</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-11"><div class="prep-check"></div><span class="prep-text">🏊 Maillots de bain + serviettes</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-12"><div class="prep-check"></div><span class="prep-text">🧥 Coupe-vent / veste imperméable (montagne)</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-13"><div class="prep-check"></div><span class="prep-text">☀️ Crème solaire + casquette</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-14"><div class="prep-check"></div><span class="prep-text">💧 Gourde / bouteille d'eau</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-15"><div class="prep-check"></div><span class="prep-text">💊 Trousse pharmacie (anti-douleur, pansements)</span></li>
+      </ul>
+
+      <div class="prep-cat">📱 Tech & divers</div>
+      <ul class="prep-list">
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-20"><div class="prep-check"></div><span class="prep-text">📱 Chargeur(s) + batterie externe</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-21"><div class="prep-check"></div><span class="prep-text">📷 Appareil photo / GoPro</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-22"><div class="prep-check"></div><span class="prep-text">🗺️ Télécharger carte Madère hors-ligne (Google Maps)</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-23"><div class="prep-check"></div><span class="prep-text">💳 Vérifier carte bancaire (frais étranger ? plafond ?)</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-24"><div class="prep-check"></div><span class="prep-text">🎵 Playlist route / enceinte bluetooth</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ INFOS PRATIQUES ═══ -->
+<section class="info-section" id="info">
+  <div class="container">
+    <div class="info-card">
+      <h2>ℹ️ Infos pratiques — Madère</h2>
+      <div class="info-grid">
+        <div class="info-item"><span class="ii-icon">🕐</span><span class="ii-label">Fuseau horaire</span><span class="ii-value">UTC+0 — 1h de moins que la France</span></div>
+        <div class="info-item"><span class="ii-icon">💶</span><span class="ii-label">Monnaie</span><span class="ii-value">Euro (€) — pas de change</span></div>
+        <div class="info-item"><span class="ii-icon">🔌</span><span class="ii-label">Prises</span><span class="ii-value">Type F — comme en France ✅</span></div>
+        <div class="info-item"><span class="ii-icon">📞</span><span class="ii-label">Urgences</span><span class="ii-value">112 (universel UE)</span></div>
+        <div class="info-item"><span class="ii-icon">🚗</span><span class="ii-label">Conduite</span><span class="ii-value">À droite, comme en France</span></div>
+        <div class="info-item"><span class="ii-icon">📶</span><span class="ii-label">Réseau</span><span class="ii-value">4G/5G · Roaming UE inclus</span></div>
+        <div class="info-item"><span class="ii-icon">💰</span><span class="ii-label">Pourboires</span><span class="ii-value">Non obligatoires, 5-10% apprécié</span></div>
+        <div class="info-item"><span class="ii-icon">🗣️</span><span class="ii-label">Langue</span><span class="ii-value">Portugais · Anglais très parlé</span></div>
+      </div>
+      <div class="info-meteo">
+        🌤️ <strong>Météo octobre :</strong> 20–24°C côtes, 10–15°C en montagne. Pluie possible en altitude (nord + sommets). Prévoir une veste imperméable pour les randos. Le sud est généralement ensoleillé.
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══ NOTES & COMMENTAIRES ═══ -->
 <section class="notes-section" id="notes">
   <div class="container">
@@ -599,7 +719,6 @@
         <textarea data-key="comment-caro" placeholder="Tes remarques, idées, préférences…"></textarea>
       </div>
     </div>
-
     <div class="notes-card">
       <h2>📋 Notes générales</h2>
       <div class="person-note">
@@ -613,211 +732,282 @@
 
 <!-- ═══ TOOLBAR ═══ -->
 <div class="toolbar">
-  <button class="tb-btn save" onclick="saveAll()">💾 Sauvegarder</button>
-  <button class="tb-btn share" onclick="shareData()">📤 Partager</button>
-  <button class="tb-btn reset" onclick="if(confirm('Tout réinitialiser ?')){localStorage.clear();location.reload()}">🗑️ Reset</button>
+  <div class="tb-sync"><span class="sync-d off" id="tbSync"></span> <span id="tbSyncText">Connexion…</span></div>
+  <button class="tb-btn reset" onclick="if(confirm('⚠️ Tout réinitialiser pour TOUT LE MONDE ?')){tripRef.set(null);location.reload()}">🗑️ Reset</button>
 </div>
-<div class="save-toast" id="toast">✅ Sauvegardé !</div>
+<div class="save-toast" id="toast">✅ Synchronisé !</div>
 
 <script>
-const KEY = 'madeira-trip-v2';
-let state = {votes:{},checks:{},notes:{},lodging:{},lodgePrices:{}};
+// ═══ FIREBASE INIT ═══
+const firebaseConfig = {
+  apiKey: "AIzaSyCIzKf4AQ0SK5ti0rDcpyUr1fSgVE-PurY",
+  authDomain: "madeira-aefad.firebaseapp.com",
+  databaseURL: "https://madeira-aefad-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "madeira-aefad",
+  storageBucket: "madeira-aefad.firebasestorage.app",
+  messagingSenderId: "41369100239",
+  appId: "1:41369100239:web:0fcad699372345d45f7cba"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const tripRef = db.ref('trip');
 
-// ── Load ──
-function loadState(){
-  try{ const s = localStorage.getItem(KEY); if(s) state = JSON.parse(s); } catch(e){}
-  // Restore votes
-  for(const [k,v] of Object.entries(state.votes||{})){
-    const [lodge,person] = k.split('|');
-    document.querySelectorAll(`.lodge-opt[data-lodge="${lodge}"] .vote-btn`).forEach(b=>{
-      const btnPerson = b.closest('.lodge-votes').querySelectorAll('.vote-label');
-      // find correct person's buttons
-    });
-  }
-  applyVotes();
-  // Restore checks
-  for(const [k,v] of Object.entries(state.checks||{})){
-    if(v){ const el = document.querySelector(`[data-key="${k}"]`); if(el){el.classList.add('checked');el.textContent='✓';el.closest('.act-item')?.classList.add('done');}}
-  }
-  // Restore notes
-  document.querySelectorAll('textarea[data-key]').forEach(ta=>{
-    const v = (state.notes||{})[ta.dataset.key];
-    if(v) ta.value = v;
-  });
-  // Restore lodging selections
-  for(const [etape,id] of Object.entries(state.lodging||{})){
-    const opt = document.querySelector(`.lodge-opt[data-lodge="${id}"]`);
-    if(opt){
-      opt.closest('.lodging-card').querySelectorAll(`.lodge-opt`).forEach(o=>{
-        // Only deselect same-period options
-      });
-      opt.classList.add('selected');
-      opt.querySelector('.select-lodge-btn')?.classList.add('chosen');
-      if(opt.querySelector('.select-lodge-btn')) opt.querySelector('.select-lodge-btn').textContent='✓ Choisi !';
-    }
-  }
+// ═══ DEFAULTS ═══
+const LODGE_DEFAULTS = {'machico-1':230,'sv-1':273,'pd-2':254,'pd-3':273,'fun-1':70,'fun-2':108,'fun-3':180};
+const BUDGET_DEFAULTS = {car:350,food:600,activities:210,misc:110};
+const PERIODS = {etape1:['machico-1'],etape2:['sv-1','pd-2','pd-3'],etape3:['fun-1','fun-2','fun-3']};
+
+// ═══ STATE ═══
+let isApplying = false;
+let noteTimers = {};
+
+// ═══ CONNECTION STATUS ═══
+db.ref('.info/connected').on('value', snap => {
+  const on = snap.val() === true;
+  document.getElementById('heroSync').className = 'sync-dot ' + (on ? 'on' : 'off');
+  document.getElementById('heroSyncText').textContent = on ? 'Synchro temps réel ✨' : 'Hors-ligne';
+  document.getElementById('tbSync').className = 'sync-d ' + (on ? 'on' : 'off');
+  document.getElementById('tbSyncText').textContent = on ? 'Synchro active' : 'Hors-ligne';
+});
+
+// ═══ LISTEN FOR REMOTE CHANGES ═══
+tripRef.on('value', snap => {
+  const data = snap.val() || {};
+  isApplying = true;
+  applyVotes(data.votes || {});
+  applyChecks(data.checks || {});
+  applyNotes(data.notes || {});
+  applyLodging(data.lodging || {});
+  applyLodgePrices(data.lodgePrices || {});
+  applyBudgetPrices(data.budgetPrices || {});
+  applyPrepChecks(data.prepChecks || {});
   updateBudget();
-}
+  isApplying = false;
+});
 
-function applyVotes(){
-  for(const [k,v] of Object.entries(state.votes||{})){
-    const [lodge,person] = k.split('|');
+// ═══ APPLY FUNCTIONS ═══
+function applyVotes(votes) {
+  // Reset all vote buttons first
+  document.querySelectorAll('.vote-btn').forEach(b => b.classList.remove('active'));
+  for (const [k, v] of Object.entries(votes)) {
+    const [lodge, person] = k.split('|');
     const opt = document.querySelector(`.lodge-opt[data-lodge="${lodge}"]`);
-    if(!opt) continue;
-    const voteGroups = opt.querySelectorAll('.lodge-votes .vote-label');
-    voteGroups.forEach(label=>{
-      if(label.textContent.trim().toLowerCase()===person){
+    if (!opt) continue;
+    const labels = opt.querySelectorAll('.lodge-votes .vote-label');
+    labels.forEach(label => {
+      if (label.textContent.trim().toLowerCase() === person) {
         let sib = label.nextElementSibling;
-        while(sib && sib.classList.contains('vote-btn')){
-          sib.classList.remove('active');
-          if(sib.classList.contains(v)) sib.classList.add('active');
+        while (sib && sib.classList.contains('vote-btn')) {
+          if (sib.classList.contains(v)) sib.classList.add('active');
           sib = sib.nextElementSibling;
-          if(sib && !sib.classList.contains('vote-btn')) break;
+          if (sib && !sib.classList.contains('vote-btn')) break;
         }
       }
     });
   }
 }
 
-// ── Vote ──
-function vote(btn,lodge,person,value){
-  // Deselect siblings
-  const parent = btn.parentElement;
-  const label = [...parent.querySelectorAll('.vote-label')].find(l=>l.textContent.trim().toLowerCase()===person);
-  if(label){
-    let sib = label.nextElementSibling;
-    while(sib && sib.classList.contains('vote-btn')){
-      sib.classList.remove('active');
-      sib = sib.nextElementSibling;
-      if(sib && !sib.classList.contains('vote-btn')) break;
-    }
-  }
-  btn.classList.add('active');
-  state.votes[lodge+'|'+person] = value;
-  autoSave();
+function applyChecks(checks) {
+  document.querySelectorAll('.act-check').forEach(el => {
+    const done = checks[el.dataset.key] === true;
+    el.classList.toggle('checked', done);
+    el.textContent = done ? '✓' : '';
+    el.closest('.act-item')?.classList.toggle('done', done);
+  });
 }
 
-// ── Check ──
-function toggleCheck(el){
-  el.classList.toggle('checked');
-  const done = el.classList.contains('checked');
-  el.textContent = done ? '✓' : '';
-  el.closest('.act-item')?.classList.toggle('done',done);
-  state.checks[el.dataset.key] = done;
-  autoSave();
-}
-
-// ── Lodge selection ──
-function selectLodge(etape,id,price){
-  // Figure out which options belong to same period
-  const periods = {
-    etape1:['machico-1'],
-    etape2:['sv-1','pd-2','pd-3'],
-    etape3:['fun-1','fun-2','fun-3']
-  };
-  (periods[etape]||[]).forEach(lid=>{
-    const o = document.querySelector(`.lodge-opt[data-lodge="${lid}"]`);
-    if(o){
-      o.classList.remove('selected');
-      const b = o.querySelector('.select-lodge-btn');
-      if(b){b.classList.remove('chosen');b.textContent='✓ Choisir cette option';}
+function applyNotes(notes) {
+  document.querySelectorAll('textarea[data-key]').forEach(ta => {
+    const v = notes[ta.dataset.key];
+    if (v !== undefined && ta.value !== v && document.activeElement !== ta) {
+      ta.value = v;
     }
   });
-  const opt = document.querySelector(`.lodge-opt[data-lodge="${id}"]`);
-  if(opt){
-    opt.classList.add('selected');
-    const b = opt.querySelector('.select-lodge-btn');
-    if(b){b.classList.add('chosen');b.textContent='✓ Choisi !';}
+}
+
+function applyLodging(lodging) {
+  // Reset all
+  document.querySelectorAll('.lodge-opt').forEach(o => {
+    o.classList.remove('selected');
+    const b = o.querySelector('.select-lodge-btn');
+    if (b) { b.classList.remove('chosen'); b.textContent = '✓ Choisir cette option'; }
+  });
+  for (const [etape, id] of Object.entries(lodging)) {
+    const opt = document.querySelector(`.lodge-opt[data-lodge="${id}"]`);
+    if (opt) {
+      opt.classList.add('selected');
+      const b = opt.querySelector('.select-lodge-btn');
+      if (b) { b.classList.add('chosen'); b.textContent = '✓ Choisi !'; }
+    }
   }
-  state.lodging[etape] = id;
-  state.lodgePrices[etape] = price;
-  updateBudget();
-  autoSave();
 }
 
-// ── Budget ──
-function updateBudget(){
-  const lp = state.lodgePrices||{};
-  const lodgeTotal = (lp.etape1||0) + (lp.etape2||0) + (lp.etape3||0);
-  const fixed = 310 + 600 + 210 + 110; // car + food + activities + misc
-  const total = lodgeTotal > 0 ? lodgeTotal + fixed : 0;
-
-  document.getElementById('bLodge').textContent = lodgeTotal > 0 ? `~${lodgeTotal} €` : '—';
-  document.getElementById('bLodgePP').textContent = lodgeTotal > 0 ? `${Math.round(lodgeTotal/3)} € / pers.` : '';
-  document.getElementById('budgetTotal').textContent = total > 0 ? `~${total} €` : '—';
-  document.getElementById('budgetPP').textContent = total > 0 ? `~${Math.round(total/3)} €` : '—';
-  document.getElementById('budgetPerDay').textContent = total > 0 ? `≈ ${Math.round(total/3/8)} € / jour` : '';
+function applyLodgePrices(prices) {
+  document.querySelectorAll('input[data-lp]').forEach(inp => {
+    const key = inp.dataset.lp;
+    if (prices[key] !== undefined && document.activeElement !== inp) {
+      inp.value = prices[key];
+      updateLodgePP(key, prices[key]);
+    }
+  });
 }
 
-// ── Notes auto-save on input ──
-document.querySelectorAll('textarea[data-key]').forEach(ta=>{
-  ta.addEventListener('input',()=>{
-    state.notes[ta.dataset.key] = ta.value;
-    autoSave();
+function applyBudgetPrices(prices) {
+  const bp = { ...BUDGET_DEFAULTS, ...prices };
+  document.querySelectorAll('input[data-bp]').forEach(inp => {
+    const key = inp.dataset.bp;
+    if (bp[key] !== undefined && document.activeElement !== inp) {
+      inp.value = bp[key];
+      const ppEl = document.querySelector(`[data-bpp="${key}"]`);
+      if (ppEl) ppEl.textContent = Math.round(bp[key] / 3) + ' € / pers.';
+    }
+  });
+}
+
+function applyPrepChecks(checks) {
+  document.querySelectorAll('.prep-item').forEach(item => {
+    const done = checks[item.dataset.key] === true;
+    item.classList.toggle('done', done);
+    const chk = item.querySelector('.prep-check');
+    if (chk) { chk.classList.toggle('checked', done); chk.textContent = done ? '✓' : ''; }
+  });
+}
+
+// ═══ USER ACTIONS ═══
+function vote(lodge, person, value) {
+  if (isApplying) return;
+  tripRef.child('votes/' + lodge + '|' + person).set(value);
+  showToast();
+}
+
+function toggleCheck(el) {
+  if (isApplying) return;
+  const done = !el.classList.contains('checked');
+  tripRef.child('checks/' + el.dataset.key).set(done);
+  showToast();
+}
+
+function selectLodge(etape, id) {
+  if (isApplying) return;
+  // Get current price from input
+  const inp = document.querySelector(`input[data-lp="${id}"]`);
+  const price = inp ? parseInt(inp.value) || LODGE_DEFAULTS[id] : LODGE_DEFAULTS[id];
+  tripRef.child('lodging/' + etape).set(id);
+  tripRef.child('lodgePrices/' + id).set(price);
+  showToast();
+}
+
+function togglePrep(item) {
+  if (isApplying) return;
+  const key = item.dataset.key;
+  const done = !item.classList.contains('done');
+  tripRef.child('prepChecks/' + key).set(done);
+  showToast();
+}
+
+// ═══ EDITABLE PRICES ═══
+// Lodge prices
+document.querySelectorAll('input[data-lp]').forEach(inp => {
+  inp.addEventListener('change', () => {
+    if (isApplying) return;
+    const key = inp.dataset.lp;
+    const val = parseInt(inp.value) || 0;
+    tripRef.child('lodgePrices/' + key).set(val);
+    updateLodgePP(key, val);
+    updateBudget();
+    showToast();
   });
 });
 
-// ── Save / Load ──
-function autoSave(){ localStorage.setItem(KEY, JSON.stringify(state)); }
-function saveAll(){
-  autoSave();
+// Budget prices
+document.querySelectorAll('input[data-bp]').forEach(inp => {
+  inp.addEventListener('change', () => {
+    if (isApplying) return;
+    const key = inp.dataset.bp;
+    const val = parseInt(inp.value) || 0;
+    tripRef.child('budgetPrices/' + key).set(val);
+    const ppEl = document.querySelector(`[data-bpp="${key}"]`);
+    if (ppEl) ppEl.textContent = Math.round(val / 3) + ' € / pers.';
+    updateBudget();
+    showToast();
+  });
+});
+
+function updateLodgePP(key, total) {
+  const ppEl = document.querySelector(`[data-pp="${key}"]`);
+  if (ppEl) ppEl.textContent = Math.round(total / 3) + ' € / pers.';
+}
+
+// ═══ NOTES (debounced) ═══
+document.querySelectorAll('textarea[data-key]').forEach(ta => {
+  ta.addEventListener('input', () => {
+    if (isApplying) return;
+    const key = ta.dataset.key;
+    clearTimeout(noteTimers[key]);
+    noteTimers[key] = setTimeout(() => {
+      tripRef.child('notes/' + key).set(ta.value);
+      showToast();
+    }, 800);
+  });
+});
+
+// ═══ BUDGET CALC ═══
+function updateBudget() {
+  // Get lodge prices for selected lodging
+  let lodgeTotal = 0;
+  let hasLodge = false;
+
+  // Read current lodging selections from the UI
+  document.querySelectorAll('.lodge-opt.selected').forEach(opt => {
+    const id = opt.dataset.lodge;
+    const inp = opt.querySelector('input[data-lp]');
+    if (inp) { lodgeTotal += parseInt(inp.value) || 0; hasLodge = true; }
+  });
+
+  // Get budget item prices
+  const getB = key => {
+    const inp = document.querySelector(`input[data-bp="${key}"]`);
+    return inp ? (parseInt(inp.value) || 0) : BUDGET_DEFAULTS[key];
+  };
+  const car = getB('car');
+  const food = getB('food');
+  const activities = getB('activities');
+  const misc = getB('misc');
+  const fixed = car + food + activities + misc;
+  const total = hasLodge ? lodgeTotal + fixed : fixed;
+
+  document.getElementById('bLodge').textContent = hasLodge ? `~${lodgeTotal} €` : '—';
+  document.getElementById('bLodgePP').textContent = hasLodge ? `${Math.round(lodgeTotal / 3)} € / pers.` : 'Choisissez ci-dessus';
+  document.getElementById('budgetTotal').textContent = `~${total} €`;
+  document.getElementById('budgetPP').textContent = `~${Math.round(total / 3)} €`;
+  document.getElementById('budgetPerDay').textContent = `≈ ${Math.round(total / 3 / 8)} € / jour`;
+}
+
+// ═══ TOAST ═══
+function showToast() {
   const t = document.getElementById('toast');
   t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2000);
+  setTimeout(() => t.classList.remove('show'), 1500);
 }
 
-// ── Share (export JSON as URL or clipboard) ──
-function shareData(){
-  const json = JSON.stringify(state);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
-  const url = location.origin + location.pathname + '?d=' + encoded;
-  if(url.length < 8000){
-    navigator.clipboard.writeText(url).then(()=>alert('🔗 Lien copié ! Envoyez-le aux autres.\n\nIls verront vos votes, choix et notes.')).catch(()=>{
-      prompt('Copiez ce lien :',url);
-    });
-  } else {
-    navigator.clipboard.writeText(json).then(()=>alert('📋 Données copiées ! (Trop long pour un lien)\nL\'autre personne peut les importer.')).catch(()=>{
-      prompt('Copiez ces données :',json);
-    });
-  }
-}
-
-// ── Import from URL ──
-function importFromURL(){
-  const p = new URLSearchParams(location.search);
-  const d = p.get('d');
-  if(d){
-    try{
-      const json = decodeURIComponent(escape(atob(d)));
-      const imported = JSON.parse(json);
-      // Merge: imported data wins
-      state = imported;
-      localStorage.setItem(KEY, JSON.stringify(state));
-      // Clean URL
-      history.replaceState(null,'',location.pathname);
-    }catch(e){ console.warn('Import failed',e); }
-  }
-}
-
-// ── Nav ──
-const sIds = ['lodging','budget','east','north','funchal','notes'];
+// ═══ NAV ═══
+const sIds = ['lodging','budget','east','north','funchal','prep','info','notes'];
 const pills = document.querySelectorAll('.pill');
-function updatePills(){
+function updatePills() {
   let cur = 'lodging';
-  sIds.forEach(id=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=130)cur=id;});
-  pills.forEach(p=>p.classList.toggle('active',p.dataset.s===cur));
+  sIds.forEach(id => { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top <= 130) cur = id; });
+  pills.forEach(p => p.classList.toggle('active', p.dataset.s === cur));
 }
-window.addEventListener('scroll',updatePills,{passive:true});
-function go(id){
-  const el=document.getElementById(id);if(!el)return;
-  const off=document.getElementById('nav').offsetHeight+10;
-  window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-off,behavior:'smooth'});
+window.addEventListener('scroll', updatePills, { passive: true });
+function go(id) {
+  const el = document.getElementById(id); if (!el) return;
+  const off = document.getElementById('nav').offsetHeight + 10;
+  window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - off, behavior: 'smooth' });
 }
 
-// ── Init ──
-importFromURL();
-loadState();
+// ═══ INIT ═══
 updatePills();
+updateBudget();
 </script>
 </body>
 </html>

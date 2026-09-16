@@ -230,7 +230,6 @@ footer .heart{color:#e07a5f}
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0,0,0,0.15);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: zoom-in;
   background: #fff;
   padding: 8px 8px 45px 8px;
   display: flex;
@@ -271,7 +270,6 @@ footer .heart{color:#e07a5f}
   padding: 20px;
   opacity: 0;
   transition: opacity 0.3s;
-  cursor: zoom-out;
 }
 .lightbox.active {
   display: flex;
@@ -364,6 +362,36 @@ footer .heart{color:#e07a5f}
 }
 .act-name { font-weight: 600; color: #333; }
 .act-price { font-weight: 700; color: var(--accent); }
+
+/* CUSTOM CURSOR */
+@media (pointer: fine) {
+  body, a, button, input, textarea, .pill, .photo-item, .act-check, .prep-check, .custom-pin {
+    cursor: none !important;
+  }
+}
+#cursor-dot, #cursor-ring {
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 999999;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+#cursor-dot {
+  width: 8px; height: 8px;
+  background-color: var(--accent);
+  transition: transform 0.15s ease-out;
+}
+#cursor-ring {
+  width: 32px; height: 32px;
+  border: 2px solid var(--accent);
+  transition: width 0.2s, height 0.2s, background-color 0.2s, border-color 0.2s;
+}
+#cursor-ring.hover {
+  width: 50px; height: 50px;
+  background-color: rgba(42, 111, 151, 0.1);
+  border-color: rgba(42, 111, 151, 0.4);
+}
 </style>
 </head>
 <body>
@@ -1476,11 +1504,13 @@ function initMap() {
         e.stopPropagation();
         
         // Fly to the marker with a cinematic 3D angle
+        // Add padding to shift the marker to the left, so the 300px right panel doesn't cover it
         map.flyTo({
           center: [p.lng, p.lat],
           zoom: 13.5,
           pitch: 70,
           bearing: (Math.random() * 60) - 30, // random dramatic angle
+          padding: { right: 320 }, // Shift center to the left to account for panel
           duration: 2500,
           essential: true
         });
@@ -1523,6 +1553,7 @@ function closeMapPanel() {
         zoom: 9.5,
         pitch: 45,
         bearing: -10,
+        padding: { right: 0 },
         duration: 2500,
         essential: true
       });
@@ -1544,12 +1575,55 @@ function initScrollAnimations() {
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 }
 
+// ═══ CUSTOM CURSOR ═══
+function initCustomCursor() {
+  const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  if (isTouchDevice) return; // Disable custom cursor on touch devices
+
+  const dot = document.createElement('div');
+  dot.id = 'cursor-dot';
+  const ring = document.createElement('div');
+  ring.id = 'cursor-ring';
+  document.body.appendChild(dot);
+  document.body.appendChild(ring);
+
+  let mouseX = -100, mouseY = -100;
+  let ringX = -100, ringY = -100;
+  let isHovering = false;
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    dot.style.left = `${mouseX}px`;
+    dot.style.top = `${mouseY}px`;
+  });
+
+  document.body.addEventListener('mouseover', (e) => {
+    const clickable = e.target.closest('a, button, input, textarea, .pill, .photo-item, .act-check, .prep-check, .mapboxgl-marker');
+    if (clickable) {
+      ring.classList.add('hover');
+    } else {
+      ring.classList.remove('hover');
+    }
+  });
+
+  function renderCursor() {
+    ringX += (mouseX - ringX) * 0.15; // smoothness
+    ringY += (mouseY - ringY) * 0.15;
+    ring.style.left = `${ringX}px`;
+    ring.style.top = `${ringY}px`;
+    requestAnimationFrame(renderCursor);
+  }
+  requestAnimationFrame(renderCursor);
+}
+
 // ═══ INIT ═══
 updatePills();
 updateBudget();
 loadAlbum();
 setTimeout(initMap, 100);
 setTimeout(initScrollAnimations, 200);
+setTimeout(initCustomCursor, 500); // Initialize after DOM elements are fully loaded
 </script>
 </body>
 </html>

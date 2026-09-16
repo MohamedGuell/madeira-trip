@@ -397,13 +397,63 @@ footer .heart{color:#e07a5f}
   background-color: rgba(42, 111, 151, 0.1);
   border-color: rgba(42, 111, 151, 0.4);
 }
+
+/* ═══ DARK MODE ═══ */
+[data-theme="dark"] {
+  --bg: #121212; --text: #e0e0e0; --text-soft: #a0a0a0;
+  --card: #1e1e1e; --shadow: 0 4px 20px rgba(0,0,0,0.4); --shadow-hover: 0 8px 32px rgba(0,0,0,0.6);
+  --east: #2a2018; --north: #1a2a22; --funchal: #1e1b29;
+}
+[data-theme="dark"] .nav { background: rgba(18,18,18,0.85); border-bottom-color: rgba(255,255,255,0.05); }
+[data-theme="dark"] .pill { background: rgba(255,255,255,0.08); color: #ccc; }
+[data-theme="dark"] .hero { background: linear-gradient(-45deg, #0d222e, #1a3f50, #204b57, #2c5150, #133a52); background-size: 400% 400%; }
+[data-theme="dark"] .hero::after { background: var(--bg); }
+[data-theme="dark"] .hero .dates-badge { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); }
+[data-theme="dark"] .sec-title { background: rgba(255,255,255,0.08); color: #ccc; }
+[data-theme="dark"] .timeline::before { background: rgba(255,255,255,0.1); }
+[data-theme="dark"] .day-card::before { border-color: var(--card); }
+[data-theme="dark"] .act-item.done span:last-child { opacity: 0.4; color: #888; }
+[data-theme="dark"] .act-check { background: #333; border-color: #555; }
+[data-theme="dark"] .lodge-opt { background: #242424; border-color: rgba(255,255,255,0.05); }
+[data-theme="dark"] .lodge-opt:hover { background: #2a2a2a; }
+[data-theme="dark"] .vote-btn { background: #2a2a2a; border-color: #444; color: #ccc; }
+[data-theme="dark"] .vote-btn.oui.active { background: #1b3d22; border-color: #2e7d32; }
+[data-theme="dark"] .vote-btn.bof.active { background: #4a3000; border-color: #ff8f00; }
+[data-theme="dark"] .vote-btn.non.active { background: #4a1515; border-color: #c62828; }
+[data-theme="dark"] .budget-card { background: linear-gradient(135deg, #18241d, #1a241f); border-color: rgba(255,255,255,0.05); }
+[data-theme="dark"] .budget-strip, [data-theme="dark"] .b-row { background: #222; border-color: rgba(255,255,255,0.05); }
+[data-theme="dark"] .bs-block { border-color: rgba(255,255,255,0.05); }
+[data-theme="dark"] .prep-check { background: #333; border-color: #555; }
+[data-theme="dark"] .info-item { background: #262626; }
+[data-theme="dark"] .info-meteo { background: linear-gradient(135deg, #152c3f, #2d1e33); }
+[data-theme="dark"] .person-note textarea, [data-theme="dark"] .day-note textarea { background: #222; border-color: #444; color: #fff; }
+[data-theme="dark"] .toolbar { background: rgba(30,30,30,0.92); border-top-color: rgba(255,255,255,0.05); }
+[data-theme="dark"] .tb-btn.reset { background: #333; color: #ccc; }
+[data-theme="dark"] .alert { background: #382810; color: #f0a830; border-color: #f0a830; }
+[data-theme="dark"] .order-tip { background: #132a40; color: #5b9bd5; border-color: #5b9bd5; }
+[data-theme="dark"] .photo-item { background: #222; }
+[data-theme="dark"] .photo-caption { color: #ccc; }
+[data-theme="dark"] .map-panel { background: rgba(30, 30, 30, 0.95); color: #eee; }
+[data-theme="dark"] .activity-item { border-color: #444; }
+[data-theme="dark"] .act-name { color: #ccc; }
+[data-theme="dark"] .select-lodge-btn { background: #222; border: 1px solid #333; }
+[data-theme="dark"] .select-lodge-btn:hover { background: #333; }
+[data-theme="dark"] .select-lodge-btn.chosen { background: var(--green); border-color: var(--green); color: #fff; }
+
+/* Dark Mode Toggle Switch */
+.theme-switch { position: fixed; top: 12px; right: 16px; z-index: 1000; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(8px); cursor: pointer; color: #fff; font-size: 1.2rem; transition: all 0.3s; }
+.theme-switch:hover { transform: scale(1.1); background: rgba(255,255,255,0.25); }
+.theme-switch:active { transform: scale(0.9); }
+[data-theme="dark"] .theme-switch { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); }
 </style>
 </head>
 <body>
 
+<button class="theme-switch" id="theme-toggle" title="Toggle Dark Mode">🌙</button>
+
 <!-- ═══ HERO ═══ -->
 <header class="hero">
-  <h1>🏝️ Madeira</h1>
+  <h1>Madeira 🏝️</h1>
   <p>Vincent · Momo · Caro</p>
   <div class="dates-badge">📅 9 → 16 Octobre 2026 · 3 voyageurs</div>
   <div class="sync-badge"><span class="sync-dot off" id="heroSync"></span> <span id="heroSyncText">Connexion…</span></div>
@@ -1395,9 +1445,11 @@ function initMap() {
   // Jeton Mapbox de l'utilisateur
   mapboxgl.accessToken = 'pk.eyJ1IjoibW9odGFkb24iLCJhIjoiY211NGRiZXdkMGV5eDJ3cXp2eGx6czNrZiJ9.vUK8_n2gAs92ImWADDs-lg';
   
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  
   map = new mapboxgl.Map({
     container: 'madeira-map',
-    style: 'mapbox://styles/mapbox/outdoors-v12',
+    style: isDark ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/outdoors-v12',
     center: [-16.96, 32.75],
     zoom: 9.5,
     pitch: 45,
@@ -1680,13 +1732,108 @@ function initCustomCursor() {
   requestAnimationFrame(renderCursor);
 }
 
+// ═══ THEME TOGGLE (DARK MODE) ═══
+function initTheme() {
+  const toggleBtn = document.getElementById('theme-toggle');
+  const savedTheme = localStorage.getItem('madeira-theme') || 'light';
+  
+  if (savedTheme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    toggleBtn.innerText = '☀️';
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('madeira-theme', newTheme);
+    
+    toggleBtn.innerText = newTheme === 'dark' ? '☀️' : '🌙';
+    
+    // Update Mapbox style if loaded
+    if (map) {
+      const styleUrl = newTheme === 'dark' 
+        ? 'mapbox://styles/mapbox/dark-v11'
+        : 'mapbox://styles/mapbox/outdoors-v12';
+      
+      // Preserve current map state (zoom, center, pitch)
+      const currentCenter = map.getCenter();
+      const currentZoom = map.getZoom();
+      const currentPitch = map.getPitch();
+      const currentBearing = map.getBearing();
+      
+      map.setStyle(styleUrl);
+      
+      // Mapbox removes sources/layers when style changes, so we must re-add the 3D terrain and route.
+      map.once('style.load', () => {
+        // Re-add Terrain
+        map.addSource('mapbox-dem', {
+          'type': 'raster-dem',
+          'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+          'tileSize': 512,
+          'maxzoom': 14
+        });
+        map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
+
+        // Re-add Sky
+        map.addLayer({
+          'id': 'sky',
+          'type': 'sky',
+          'paint': {
+            'sky-type': 'atmosphere',
+            'sky-atmosphere-sun': [0.0, 0.0],
+            'sky-atmosphere-sun-intensity': 15
+          }
+        });
+
+        // Re-add Route
+        const points = [
+          { lat: 32.7180, lng: -16.7667 }, // Machico
+          { lat: 32.7589, lng: -16.9436 }, // Pico Ruivo
+          { lat: 32.8239, lng: -16.9881 }, // Ponta Delgada
+          { lat: 32.8041, lng: -17.0450 }, // Sao Vicente
+          { lat: 32.7630, lng: -17.1337 }, // Rabacal
+          { lat: 32.6500, lng: -16.9082 }  // Funchal
+        ];
+        const coords = points.map(p => [p.lng, p.lat]);
+        
+        map.addSource('route', {
+          'type': 'geojson',
+          'data': {
+            'type': 'Feature',
+            'geometry': { 'type': 'LineString', 'coordinates': coords }
+          }
+        });
+        
+        map.addLayer({
+          'id': 'route-glow',
+          'type': 'line',
+          'source': 'route',
+          'layout': { 'line-join': 'round', 'line-cap': 'round' },
+          'paint': { 'line-color': '#e8913a', 'line-width': 10, 'line-opacity': 0.3, 'line-blur': 4 }
+        });
+        
+        map.addLayer({
+          'id': 'route',
+          'type': 'line',
+          'source': 'route',
+          'layout': { 'line-join': 'round', 'line-cap': 'round' },
+          'paint': { 'line-color': '#e8913a', 'line-width': 4, 'line-dasharray': [1.5, 2] }
+        });
+      });
+    }
+  });
+}
+
 // ═══ INIT ═══
+initTheme();
 updatePills();
 updateBudget();
 loadAlbum();
 setTimeout(initMap, 100);
 setTimeout(initScrollAnimations, 200);
-setTimeout(initCustomCursor, 500); // Initialize after DOM elements are fully loaded
+setTimeout(initCustomCursor, 500);
 </script>
 </body>
 </html>

@@ -24,22 +24,44 @@ html{scroll-behavior:smooth}
 body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
 .container{max-width:540px;margin:0 auto;padding:0 14px}
 
+/* ── Animations ── */
+@keyframes gradient-bg {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+.reveal {
+  opacity: 0;
+  transform: translateY(30px) scale(0.98);
+  transition: all 0.6s var(--ease);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
 /* ── Hero ── */
-.hero{position:relative;overflow:hidden;background:linear-gradient(170deg,#1b4965,#468faf 50%,#62b6cb 75%,#bee9e8);padding:44px 0 0;text-align:center}
+.hero{position:relative;overflow:hidden;background:linear-gradient(-45deg,#1b4965,#468faf,#62b6cb,#bee9e8,#2a6f97);background-size:400% 400%;animation:gradient-bg 15s ease infinite;padding:44px 0 0;text-align:center}
 .hero::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:44px;background:var(--bg);border-radius:30px 30px 0 0}
-.hero h1{font-size:2.2rem;font-weight:800;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.25)}
-.hero p{font-size:.95rem;color:rgba(255,255,255,.8);margin-top:2px;font-weight:500}
-.hero .dates-badge{display:inline-block;margin-top:10px;padding:6px 18px;background:rgba(255,255,255,.15);border-radius:999px;font-size:.82rem;font-weight:600;color:#fff;backdrop-filter:blur(6px)}
+.hero h1{font-size:2.5rem;font-weight:800;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.25);display:inline-block;animation:float 4s ease-in-out infinite}
+.hero p{font-size:.95rem;color:rgba(255,255,255,.9);margin-top:2px;font-weight:600}
+.hero .dates-badge{display:inline-block;margin-top:10px;padding:6px 18px;background:rgba(255,255,255,.2);border-radius:999px;font-size:.82rem;font-weight:600;color:#fff;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2)}
 .sync-badge{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 14px;background:rgba(0,0,0,.2);border-radius:999px;font-size:.7rem;font-weight:600;color:#fff;backdrop-filter:blur(6px);margin-bottom:50px;transition:all .3s}
 .sync-dot{width:8px;height:8px;border-radius:50%;transition:background .3s}
-.sync-dot.on{background:#4caf50;box-shadow:0 0 6px #4caf50}.sync-dot.off{background:#f44336}
+.sync-dot.on{background:#4caf50;box-shadow:0 0 8px #4caf50}.sync-dot.off{background:#f44336}
 
 /* ── Nav ── */
-.nav{position:sticky;top:0;z-index:100;background:rgba(250,248,245,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(0,0,0,.05);padding:8px 0}
+.nav{position:sticky;top:0;z-index:100;background:rgba(250,248,245,.8);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,0,0,.05);padding:8px 0;transition:all 0.3s}
 .nav .container{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
 .nav .container::-webkit-scrollbar{display:none}
-.pill{flex-shrink:0;padding:7px 13px;border-radius:999px;font-size:.72rem;font-weight:600;cursor:pointer;border:none;background:#eee;color:var(--text-soft);transition:all .2s var(--ease);white-space:nowrap}
-.pill:hover,.pill.active{color:#fff;transform:scale(1.03)}
+.pill{flex-shrink:0;padding:7px 13px;border-radius:999px;font-size:.72rem;font-weight:600;cursor:pointer;border:none;background:rgba(0,0,0,0.05);color:var(--text-soft);transition:all .2s var(--ease);white-space:nowrap}
+.pill:hover,.pill.active{color:#fff;transform:scale(1.05)}
+.pill:active{transform:scale(0.95)!important}
 .pill[data-s="lodging"]{--c:#c97b3a}.pill[data-s="budget"]{--c:#3a8558}.pill[data-s="east"]{--c:#b08968}.pill[data-s="north"]{--c:#52796f}.pill[data-s="funchal"]{--c:#7b6fa6}.pill[data-s="notes"]{--c:#6b8cae}.pill[data-s="prep"]{--c:#e07a5f}.pill[data-s="info"]{--c:#5b8c85}.pill[data-s="album"]{--c:#d4a373}
 .pill:hover,.pill.active{background:var(--c);box-shadow:0 3px 12px color-mix(in srgb,var(--c) 35%,transparent)}
 
@@ -89,7 +111,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .lodging-card h2{font-size:1rem;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
 .lodging-card .sub{font-size:.75rem;color:var(--text-soft);margin-bottom:14px}
 .lodge-period{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);padding:8px 0 6px;border-bottom:2px solid var(--accent);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
-.lodge-opt{border:1px solid rgba(0,0,0,.06);border-radius:var(--radius-sm);padding:12px;margin-bottom:10px;background:#fafafa;transition:all .25s}
+.lodge-opt{border:1px solid rgba(0,0,0,.06);border-radius:var(--radius-sm);padding:12px;margin-bottom:10px;background:#fafafa;transition:all .3s var(--ease)}
+.lodge-opt:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.08);background:#fff}
 .lodge-opt.selected{border-color:var(--green);background:#f0fdf4;box-shadow:0 0 0 2px rgba(58,133,88,.15)}
 .lodge-opt-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
 .lodge-opt-name{font-weight:700;font-size:.88rem;display:flex;align-items:center;gap:6px}
@@ -105,14 +128,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .lodge-votes{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .lodge-votes .vote-label{font-size:.68rem;font-weight:600;color:var(--text-soft);margin-right:2px}
 .vote-btn{padding:4px 10px;border-radius:999px;font-size:.7rem;font-weight:600;border:1.5px solid #ddd;cursor:pointer;transition:all .2s;background:#fff}
-.vote-btn:hover{transform:scale(1.05)}
+.vote-btn:hover{transform:scale(1.05)}.vote-btn:active{transform:scale(0.95)!important}
 .vote-btn.oui{border-color:#66bb6a;color:#2e7d32;background:#e8f5e9}
 .vote-btn.bof{border-color:#ffa726;color:#e65100;background:#fff8e1}
 .vote-btn.non{border-color:#ef5350;color:#c62828;background:#ffebee}
 .vote-btn.active{font-weight:800;box-shadow:0 2px 8px rgba(0,0,0,.1)}
 .vote-btn.oui.active{background:#c8e6c9;border-width:2px}.vote-btn.bof.active{background:#ffe0b2;border-width:2px}.vote-btn.non.active{background:#ffcdd2;border-width:2px}
 .select-lodge-btn{display:block;width:100%;padding:8px;border:none;border-radius:8px;font-size:.78rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:8px}
-.select-lodge-btn{background:#e8f5e9;color:#2e7d32}.select-lodge-btn:hover{background:#c8e6c9}
+.select-lodge-btn{background:#e8f5e9;color:#2e7d32}.select-lodge-btn:hover{background:#c8e6c9}.select-lodge-btn:active{transform:scale(0.98)!important}
 .select-lodge-btn.chosen{background:var(--green);color:#fff}
 
 /* ═══ EDITABLE PRICE ═══ */
@@ -369,7 +392,7 @@ footer .heart{color:#e07a5f}
 </nav>
 
 <!-- ═══ MAP ═══ -->
-<section id="map-section" style="padding-top:20px;">
+<section id="map-section" class="reveal" style="padding-top:20px;">
   <div class="container">
     <div style="background:#fff; border-radius:24px; box-shadow:var(--shadow); padding:8px; position:relative; overflow:hidden;">
       <div id="madeira-map" style="width:100%; height:450px; border-radius:18px; z-index:1;"></div>
@@ -392,7 +415,7 @@ footer .heart{color:#e07a5f}
 <!-- ═══ LODGING ═══ -->
 <section class="lodging-section" id="lodging">
   <div class="container">
-    <div class="lodging-card">
+    <div class="lodging-card reveal">
       <h2>🏠 Logements — Votez & Choisissez</h2>
       <p class="sub">Votez Oui / Bof / Non. Cliquez les prix pour les modifier. Tout est synchronisé en temps réel ✨</p>
 
@@ -402,7 +425,7 @@ footer .heart{color:#e07a5f}
         <span>3 nuits</span>
       </div>
 
-      <div class="lodge-opt" data-lodge="machico-A">
+      <div class="lodge-opt reveal" data-lodge="machico-A">
         <div class="lodge-opt-header">
           <div class="lodge-opt-name">🏷️ Option A (Airbnb)</div>
           <div class="lodge-price">
@@ -431,7 +454,7 @@ footer .heart{color:#e07a5f}
         </div>
       </div>
 
-      <div class="lodge-opt" data-lodge="machico-B">
+      <div class="lodge-opt reveal" data-lodge="machico-B">
         <div class="lodge-opt-header">
           <div class="lodge-opt-name">🏷️ Option B (Booking)</div>
           <div class="lodge-price">
@@ -460,7 +483,7 @@ footer .heart{color:#e07a5f}
         </div>
       </div>
 
-      <div class="lodge-opt" data-lodge="machico-C">
+      <div class="lodge-opt reveal" data-lodge="machico-C">
         <div class="lodge-opt-header">
           <div class="lodge-opt-name">🏷️ Option C (Booking)</div>
           <div class="lodge-price">
@@ -489,7 +512,7 @@ footer .heart{color:#e07a5f}
         </div>
       </div>
 
-      <div class="lodge-opt" data-lodge="machico-D">
+      <div class="lodge-opt reveal" data-lodge="machico-D">
         <div class="lodge-opt-header">
           <div class="lodge-opt-name">🏷️ Option D (Trip.com)</div>
           <div class="lodge-price">
@@ -524,7 +547,7 @@ footer .heart{color:#e07a5f}
         <span>3 nuits</span>
       </div>
 
-      <div class="lodge-opt" data-lodge="nord-1">
+      <div class="lodge-opt reveal" data-lodge="nord-1">
         <div class="lodge-opt-header">
           <div class="lodge-opt-name">🏷️ Option 01 (São Vicente)</div>
           <div class="lodge-price">
@@ -554,7 +577,7 @@ footer .heart{color:#e07a5f}
         <button class="select-lodge-btn" onclick="selectLodge('etape2','nord-1')">✓ Choisir cette option</button>
       </div>
 
-      <div class="lodge-opt" data-lodge="nord-2">
+      <div class="lodge-opt reveal" data-lodge="nord-2">
         <div class="lodge-opt-header">
           <div class="lodge-opt-name">🏷️ Option 02 (Ponta Delgada)</div>
           <div class="lodge-price">
@@ -584,7 +607,7 @@ footer .heart{color:#e07a5f}
         <button class="select-lodge-btn" onclick="selectLodge('etape2','nord-2')">✓ Choisir cette option</button>
       </div>
 
-      <div class="lodge-opt" data-lodge="nord-3">
+      <div class="lodge-opt reveal" data-lodge="nord-3">
         <div class="lodge-opt-header">
           <div class="lodge-opt-name">🏷️ Option 03 (Ponta Delgada)</div>
           <div class="lodge-price">
@@ -620,7 +643,7 @@ footer .heart{color:#e07a5f}
         <span>1 nuit</span>
       </div>
 
-      <div class="lodge-opt" data-lodge="fun-1">
+      <div class="lodge-opt reveal" data-lodge="fun-1">
         <div class="lodge-opt-header">
           <div class="lodge-opt-name">🏷️ Option 01 (Hostel)</div>
           <div class="lodge-price">
@@ -650,7 +673,7 @@ footer .heart{color:#e07a5f}
         <button class="select-lodge-btn" onclick="selectLodge('etape3','fun-1')">✓ Choisir cette option</button>
       </div>
 
-      <div class="lodge-opt" data-lodge="fun-2">
+      <div class="lodge-opt reveal" data-lodge="fun-2">
         <div class="lodge-opt-header">
           <div class="lodge-opt-name">🏷️ Option 02 (Airbnb)</div>
           <div class="lodge-price">
@@ -680,7 +703,7 @@ footer .heart{color:#e07a5f}
         <button class="select-lodge-btn" onclick="selectLodge('etape3','fun-2')">✓ Choisir cette option</button>
       </div>
 
-      <div class="lodge-opt" data-lodge="fun-3">
+      <div class="lodge-opt reveal" data-lodge="fun-3">
         <div class="lodge-opt-header">
           <div class="lodge-opt-name">🏷️ 🧡 Option 03 (Airbnb)</div>
           <div class="lodge-price">
@@ -717,7 +740,7 @@ footer .heart{color:#e07a5f}
 <!-- ═══ BUDGET ═══ -->
 <section class="budget-section" id="budget">
   <div class="container">
-    <div class="budget-card">
+    <div class="budget-card reveal">
       <h2>💰 Budget · 3 Voyageurs</h2>
       <p class="sub">Cliquez sur les montants pour les modifier. Tout se recalcule et se synchronise ✏️</p>
 
@@ -772,7 +795,7 @@ footer .heart{color:#e07a5f}
     <div class="sec-title"><span class="dot" style="background:#b08968"></span> 9–12 Oct · Est sauvage & Sommets</div>
     <div class="timeline">
 
-      <div class="day-card" id="day1">
+      <div class="day-card reveal" id="day1">
         <div class="day-badge">📅 Jour 1 · 9 Oct</div>
         <h3>Funchal — Arrivée</h3>
         <ul class="act-list">
@@ -783,7 +806,7 @@ footer .heart{color:#e07a5f}
         <div class="day-note"><textarea placeholder="📝 Notes pour ce jour (logistique, horaires, liens…)" data-key="note-d1"></textarea></div>
       </div>
 
-      <div class="day-card" id="day2">
+      <div class="day-card reveal" id="day2">
         <div class="day-badge">📅 Jour 2 · 10 Oct</div>
         <h3>PR8 — Ponta de São Lourenço</h3>
         <ul class="act-list">
@@ -794,7 +817,7 @@ footer .heart{color:#e07a5f}
         <div class="day-note"><textarea placeholder="📝 Notes…" data-key="note-d2"></textarea></div>
       </div>
 
-      <div class="day-card" id="day3">
+      <div class="day-card reveal" id="day3">
         <div class="day-badge">📅 Jour 3 · 11 Oct</div>
         <h3>PR1 — Pico Arieiro → Pico Ruivo</h3>
         <ul class="act-list">
@@ -815,7 +838,7 @@ footer .heart{color:#e07a5f}
     <div class="sec-title"><span class="dot" style="background:#52796f"></span> 12–15 Oct · Nord vert & Sud ensoleillé</div>
     <div class="timeline">
 
-      <div class="day-card" id="day4">
+      <div class="day-card reveal" id="day4">
         <div class="day-badge">📅 Jour 4 · 12 Oct</div>
         <h3>Caldeirão Verde, Balcões & Santana</h3>
         <ul class="act-list">
@@ -828,7 +851,7 @@ footer .heart{color:#e07a5f}
         <div class="day-note"><textarea placeholder="📝 Notes…" data-key="note-d4"></textarea></div>
       </div>
 
-      <div class="day-card" id="day5">
+      <div class="day-card reveal" id="day5">
         <div class="day-badge">📅 Jour 5 · 13 Oct</div>
         <h3>Fanal, Seixal & Porto Moniz</h3>
         <ul class="act-list">
@@ -842,7 +865,7 @@ footer .heart{color:#e07a5f}
         <div class="day-note"><textarea placeholder="📝 Notes…" data-key="note-d5"></textarea></div>
       </div>
 
-      <div class="day-card" id="day6">
+      <div class="day-card reveal" id="day6">
         <div class="day-badge">📅 Jour 6 · 14 Oct</div>
         <h3>PR6 — 25 Fontes & Cascade Risco</h3>
         <ul class="act-list">
@@ -855,7 +878,7 @@ footer .heart{color:#e07a5f}
         <div class="day-note"><textarea placeholder="📝 Notes…" data-key="note-d6"></textarea></div>
       </div>
 
-      <div class="day-card" id="day7">
+      <div class="day-card reveal" id="day7">
         <div class="day-badge">📅 Jour 7 · 15 Oct</div>
         <h3>Curral das Freiras & Câmara de Lobos</h3>
         <ul class="act-list">
@@ -875,7 +898,7 @@ footer .heart{color:#e07a5f}
   <div class="container">
     <div class="sec-title"><span class="dot" style="background:#7b6fa6"></span> 16 Oct · Funchal à pied & Départ</div>
     <div class="timeline">
-      <div class="day-card" id="day8">
+      <div class="day-card reveal" id="day8">
         <div class="day-badge">📅 Jour 8 · 16 Oct</div>
         <h3>Marché, Vieille Ville & Départ</h3>
         <ul class="act-list">
@@ -894,7 +917,7 @@ footer .heart{color:#e07a5f}
 <!-- ═══ CHECKLIST PRÉ-DÉPART ═══ -->
 <section class="prep-section" id="prep">
   <div class="container">
-    <div class="prep-card">
+    <div class="prep-card reveal">
       <h2>🧳 Checklist pré-départ</h2>
       <p class="sub">Cochez au fur et à mesure. Synchronisé entre tous !</p>
 
@@ -933,7 +956,7 @@ footer .heart{color:#e07a5f}
 <!-- ═══ INFOS PRATIQUES ═══ -->
 <section class="info-section" id="info">
   <div class="container">
-    <div class="info-card">
+    <div class="info-card reveal">
       <h2>ℹ️ Infos pratiques — Madère</h2>
       <div class="info-grid">
         <div class="info-item"><span class="ii-icon">🕐</span><span class="ii-label">Fuseau horaire</span><span class="ii-value">UTC+0 — 1h de moins que la France</span></div>
@@ -952,7 +975,7 @@ footer .heart{color:#e07a5f}
 </section>
 
 <!-- ═══ ALBUM PHOTO ═══ -->
-<section class="info-section" id="album" style="padding-top:10px;">
+<section class="info-section" id="album" class="info-section reveal" style="padding-top:10px;">
   <div class="container">
     <div style="text-align:center; margin-bottom: 24px;">
       <h2 style="font-size:1.6rem; font-weight:800; color:var(--accent); margin-bottom:6px;">📸 L'Album Souvenirs</h2>
@@ -982,7 +1005,7 @@ footer .heart{color:#e07a5f}
 <!-- ═══ NOTES & COMMENTAIRES ═══ -->
 <section class="notes-section" id="notes">
   <div class="container">
-    <div class="notes-card">
+    <div class="notes-card reveal">
       <h2>💬 Commentaires du groupe</h2>
       <div class="person-note">
         <label><span class="avatar av-v">V</span> Vincent</label>
@@ -997,7 +1020,7 @@ footer .heart{color:#e07a5f}
         <textarea data-key="comment-caro" placeholder="Tes remarques, idées, préférences…"></textarea>
       </div>
     </div>
-    <div class="notes-card">
+    <div class="notes-card reveal">
       <h2>📋 Notes générales</h2>
       <div class="person-note">
         <textarea data-key="comment-general" placeholder="Infos vols, réservations, numéros utiles, liens Airbnb…" style="min-height:100px"></textarea>
@@ -1507,11 +1530,28 @@ function closeMapPanel() {
   }
 }
 
+// ═══ SCROLL ANIMATIONS ═══
+function initScrollAnimations() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target); // Reveal only once
+      }
+    });
+  }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
 // ═══ INIT ═══
 updatePills();
 updateBudget();
 loadAlbum();
 setTimeout(initMap, 100);
+setTimeout(initScrollAnimations, 200);
 </script>
 </body>
 </html>
+
+

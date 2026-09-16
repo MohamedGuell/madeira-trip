@@ -99,6 +99,44 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .bonus-card .bh{font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.7px}
 .bonus-card ul{list-style:none;margin-top:4px}.bonus-card li{padding:2px 0;display:flex;gap:5px;align-items:flex-start}
 
+/* ── PREMIUM UPGRADES: Countdown, Weather, Chart, Hike Badges, Collapsible ── */
+.countdown-widget { display: inline-flex; gap: 10px; margin-top: 15px; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+.cd-box { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 8px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); min-width: 60px; display: flex; flex-direction: column; align-items: center; }
+.cd-box span:first-child { font-size: 1.4rem; font-weight: 800; line-height: 1; }
+.cd-box span:last-child { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; opacity: 0.9; }
+
+.weather-widget { display: inline-flex; align-items: center; gap: 15px; margin-top: 15px; margin-bottom: 25px; padding: 10px 20px; background: rgba(0,0,0,0.2); border-radius: 999px; backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1); color: #fff; }
+.w-zone { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; }
+.w-zone span:first-child { opacity: 0.8; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+.w-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.2); }
+
+.budget-chart-container { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; background: rgba(0,0,0,0.02); padding: 15px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05); }
+.b-chart { position: relative; width: 80px; height: 80px; border-radius: 50%; background: conic-gradient(var(--accent) 0%, var(--green) 40%, var(--orange) 75%, #e0e0e0 75%); display: flex; align-items: center; justify-content: center; }
+.b-chart::after { content: ''; position: absolute; width: 66px; height: 66px; background: var(--card); border-radius: 50%; }
+.b-chart-val { position: relative; z-index: 1; font-weight: 800; font-size: 0.9rem; color: var(--text); }
+.b-chart-info { flex: 1; }
+.b-chart-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; color: var(--text); }
+.b-chart-sub { font-size: 0.75rem; color: var(--text-soft); }
+
+.hike-badge { display: flex; align-items: center; gap: 8px; margin-top: 6px; padding: 6px 10px; background: rgba(0,0,0,0.03); border-radius: 8px; font-size: 0.7rem; color: var(--text-soft); font-weight: 600; border: 1px solid rgba(0,0,0,0.05); }
+.hb-diff { padding: 2px 6px; border-radius: 4px; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.65rem; }
+.hb-diff.hard { background: var(--red); }
+.hb-diff.medium { background: var(--orange); }
+.hb-diff.easy { background: var(--green); }
+.hb-chart { height: 16px; width: 50px; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.collapsible-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 10px 0; font-weight: 700; font-size: 0.95rem; user-select: none; border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 10px; }
+.collapsible-header::after { content: '▼'; font-size: 0.7rem; transition: transform 0.3s; }
+.collapsible-header.open::after { transform: rotate(-180deg); }
+.collapsible-content { display: none; margin-bottom: 15px; }
+.collapsible-content.open { display: block; animation: fadeInDown 0.3s ease; }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+[data-theme="dark"] .budget-chart-container { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
+[data-theme="dark"] .hike-badge { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.05); }
+[data-theme="dark"] .collapsible-header { border-bottom-color: rgba(255,255,255,0.05); }
+[data-theme="dark"] .b-chart { background: conic-gradient(var(--accent) 0%, var(--green) 40%, var(--orange) 75%, #333 75%); }
+
 /* ── Day note ── */
 .day-note{margin-top:10px}
 .day-note textarea{width:100%;border:1px dashed #d0d0d0;border-radius:var(--radius-sm);padding:8px 10px;font-family:var(--font);font-size:.78rem;resize:vertical;min-height:36px;background:#fefefe;color:var(--text);transition:border-color .2s}
@@ -456,6 +494,19 @@ footer .heart{color:#e07a5f}
   <h1>Madeira 🏝️</h1>
   <p>Vincent · Momo · Caro</p>
   <div class="dates-badge">📅 9 → 16 Octobre 2026 · 3 voyageurs</div>
+  <br>
+  <div class="countdown-widget" id="countdown">
+    <div class="cd-box"><span id="cd-d">--</span><span>Jours</span></div>
+    <div class="cd-box"><span id="cd-h">--</span><span>Heures</span></div>
+    <div class="cd-box"><span id="cd-m">--</span><span>Min</span></div>
+  </div>
+  <br>
+  <div class="weather-widget">
+    <div class="w-zone"><span>Nord</span><span class="w-icon">☁️ 19°C</span></div>
+    <div class="w-divider"></div>
+    <div class="w-zone"><span>Sud</span><span class="w-icon">☀️ 24°C</span></div>
+  </div>
+  <br>
   <div class="sync-badge"><span class="sync-dot off" id="heroSync"></span> <span id="heroSyncText">Connexion…</span></div>
 </header>
 
@@ -831,6 +882,16 @@ footer .heart{color:#e07a5f}
       <h2>💰 Budget · 3 Voyageurs</h2>
       <p class="sub">Cliquez sur les montants pour les modifier. Tout se recalcule et se synchronise ✏️</p>
 
+      <div class="budget-chart-container">
+        <div class="b-chart" id="bChart">
+          <div class="b-chart-val" id="bChartVal">—</div>
+        </div>
+        <div class="b-chart-info">
+          <div class="b-chart-title">Coût estimé par personne</div>
+          <div class="b-chart-sub">Logement + Voiture + Repas</div>
+        </div>
+      </div>
+
       <div class="budget-strip">
         <div class="bs-block">
           <div class="bs-label">Total groupe</div>
@@ -897,7 +958,7 @@ footer .heart{color:#e07a5f}
         <div class="day-badge">📅 Jour 2 · 10 Oct</div>
         <h3>PR8 — Ponta de São Lourenço</h3>
         <ul class="act-list">
-          <li class="act-item"><div class="act-check" onclick="toggleCheck(this)" data-key="d2-1"></div><span class="ico">🥾</span><span>PR8 Randonnée São Lourenço</span></li>
+          <li class="act-item"><div class="act-check" onclick="toggleCheck(this)" data-key="d2-1"></div><span class="ico">🥾</span><span>PR8 Randonnée São Lourenço</span><div class="hike-badge" style="margin-top:0"><span class="hb-diff medium">Medium</span><svg class="hb-chart" viewBox="0 0 50 16"><path d="M0,14 Q10,8 20,12 T35,6 T50,10"/></svg></div></li>
           <li class="act-item"><div class="act-check" onclick="toggleCheck(this)" data-key="d2-2"></div><span class="ico">🏖️</span><span>Plage de Machico</span></li>
         </ul>
         <div class="bonus-card"><div class="bh">💎 Bonus</div><ul><li>🤿 <strong>Réserve du Garajau</strong> — snorkeling</li><li>🐟 <strong>Mercado de Machico</strong> — poisson grillé</li></ul></div>
@@ -908,7 +969,7 @@ footer .heart{color:#e07a5f}
         <div class="day-badge">📅 Jour 3 · 11 Oct</div>
         <h3>PR1 — Pico Arieiro → Pico Ruivo</h3>
         <ul class="act-list">
-          <li class="act-item"><div class="act-check" onclick="toggleCheck(this)" data-key="d3-1"></div><span class="ico">🌄</span><span>Lever de soleil Pico Arieiro → Pico Ruivo</span></li>
+          <li class="act-item"><div class="act-check" onclick="toggleCheck(this)" data-key="d3-1"></div><span class="ico">🌄</span><span>Lever de soleil Pico Arieiro → Pico Ruivo</span><div class="hike-badge" style="margin-top:0"><span class="hb-diff hard">Hard</span><svg class="hb-chart" viewBox="0 0 50 16" style="stroke:var(--red)"><path d="M0,16 L10,6 L20,10 L30,2 L40,8 L50,0"/></svg></div></li>
         </ul>
         <div class="alert">⚠️ <span>Réservez le transfert retour ou démarrez depuis <strong>Achada do Teixeira</strong>.</span></div>
         <div class="order-tip">🗓️ <span>Si couvert, intervertissez avec Jour 4 (Caldeirão Verde fonctionne sous la pluie).</span></div>
@@ -929,7 +990,7 @@ footer .heart{color:#e07a5f}
         <div class="day-badge">📅 Jour 4 · 12 Oct</div>
         <h3>Caldeirão Verde, Balcões & Santana</h3>
         <ul class="act-list">
-          <li class="act-item"><div class="act-check" onclick="toggleCheck(this)" data-key="d4-1"></div><span class="ico">🌿</span><span>PR9 Caldeirão Verde</span></li>
+          <li class="act-item"><div class="act-check" onclick="toggleCheck(this)" data-key="d4-1"></div><span class="ico">🌿</span><span>PR9 Caldeirão Verde</span><div class="hike-badge" style="margin-top:0"><span class="hb-diff easy">Easy</span><svg class="hb-chart" viewBox="0 0 50 16" style="stroke:var(--green)"><path d="M0,10 L25,12 L50,11"/></svg></div></li>
           <li class="act-item"><div class="act-check" onclick="toggleCheck(this)" data-key="d4-2"></div><span class="ico">🔭</span><span>PR11 Levada dos Balcões</span></li>
           <li class="act-item"><div class="act-check" onclick="toggleCheck(this)" data-key="d4-3"></div><span class="ico">🏡</span><span>Santana — maisons triangulaires</span></li>
         </ul>
@@ -956,7 +1017,7 @@ footer .heart{color:#e07a5f}
         <div class="day-badge">📅 Jour 6 · 14 Oct</div>
         <h3>PR6 — 25 Fontes & Cascade Risco</h3>
         <ul class="act-list">
-          <li class="act-item"><div class="act-check" onclick="toggleCheck(this)" data-key="d6-1"></div><span class="ico">💧</span><span>PR6 Levada das 25 Fontes</span></li>
+          <li class="act-item"><div class="act-check" onclick="toggleCheck(this)" data-key="d6-1"></div><span class="ico">💧</span><span>PR6 Levada das 25 Fontes</span><div class="hike-badge" style="margin-top:0"><span class="hb-diff medium">Medium</span><svg class="hb-chart" viewBox="0 0 50 16"><path d="M0,8 L20,10 L30,6 L50,12"/></svg></div></li>
           <li class="act-item"><div class="act-check" onclick="toggleCheck(this)" data-key="d6-2"></div><span class="ico">🌊</span><span>Cascade Risco (100 m)</span></li>
         </ul>
         <div class="alert">⚠️ <span>Parking de <strong>Rabaçal avant 8h30</strong> — il se remplit vite !</span></div>
@@ -1018,18 +1079,19 @@ footer .heart{color:#e07a5f}
         <li class="prep-item" onclick="togglePrep(this)" data-key="prep-6"><div class="prep-check"></div><span class="prep-text">🏥 Carte européenne d'assurance maladie (CEAM)</span></li>
       </ul>
 
-      <div class="prep-cat">👕 Bagages essentiels</div>
-      <ul class="prep-list">
-        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-10"><div class="prep-check"></div><span class="prep-text">🥾 Chaussures de randonnée (5 randos prévues !)</span></li>
-        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-11"><div class="prep-check"></div><span class="prep-text">🏊 Maillots de bain + serviettes</span></li>
-        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-12"><div class="prep-check"></div><span class="prep-text">🧥 Coupe-vent / veste imperméable (montagne)</span></li>
-        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-13"><div class="prep-check"></div><span class="prep-text">☀️ Crème solaire + casquette</span></li>
-        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-14"><div class="prep-check"></div><span class="prep-text">💧 Gourde / bouteille d'eau</span></li>
-        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-15"><div class="prep-check"></div><span class="prep-text">💊 Trousse pharmacie (anti-douleur, pansements)</span></li>
+      <div class="prep-cat collapsible-header" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open')">👕 Bagages essentiels (Ouvrir)</div>
+      <ul class="prep-list collapsible-content">
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-10"><div class="prep-check"></div><span class="prep-text">🥾 Chaussures de randonnée (Hiking boots)</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-11"><div class="prep-check"></div><span class="prep-text">🏊 Maillot de bain (Swimsuit) + serviettes</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-12"><div class="prep-check"></div><span class="prep-text">🧥 Veste imperméable / K-way (Rain jacket)</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-13"><div class="prep-check"></div><span class="prep-text">☀️ Crème solaire (Sunscreen) + casquette</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-14"><div class="prep-check"></div><span class="prep-text">🔦 Lampe frontale (Headlamp pour tunnels PR9)</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-15"><div class="prep-check"></div><span class="prep-text">💧 Gourde / bouteille d'eau</span></li>
+        <li class="prep-item" onclick="togglePrep(this)" data-key="prep-16"><div class="prep-check"></div><span class="prep-text">💊 Trousse pharmacie (anti-douleur, pansements)</span></li>
       </ul>
 
-      <div class="prep-cat">📱 Tech & divers</div>
-      <ul class="prep-list">
+      <div class="prep-cat collapsible-header" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open')">📱 Tech & divers (Ouvrir)</div>
+      <ul class="prep-list collapsible-content">
         <li class="prep-item" onclick="togglePrep(this)" data-key="prep-20"><div class="prep-check"></div><span class="prep-text">📱 Chargeur(s) + batterie externe</span></li>
         <li class="prep-item" onclick="togglePrep(this)" data-key="prep-21"><div class="prep-check"></div><span class="prep-text">📷 Appareil photo / GoPro</span></li>
         <li class="prep-item" onclick="togglePrep(this)" data-key="prep-22"><div class="prep-check"></div><span class="prep-text">🗺️ Télécharger carte Madère hors-ligne (Google Maps)</span></li>
@@ -1365,13 +1427,37 @@ function updateBudget() {
   const misc = getB('misc');
   const fixed = car + food + activities + misc;
   const total = hasLodge ? lodgeTotal + fixed : fixed;
+  document.getElementById('budgetTotal').textContent = total.toLocaleString() + ' €';
+  document.getElementById('budgetPP').textContent = Math.round(total / 3).toLocaleString() + ' €';
+  document.getElementById('budgetPerDay').textContent = `~${Math.round(total / 3 / 7)} € / jour`;
 
-  document.getElementById('bLodge').textContent = hasLodge ? `~${lodgeTotal} €` : '—';
-  document.getElementById('bLodgePP').textContent = hasLodge ? `${Math.round(lodgeTotal / 3)} € / pers.` : 'Choisissez ci-dessus';
-  document.getElementById('budgetTotal').textContent = `~${total} €`;
-  document.getElementById('budgetPP').textContent = `~${Math.round(total / 3)} €`;
-  document.getElementById('budgetPerDay').textContent = `≈ ${Math.round(total / 3 / 8)} € / jour`;
+  document.getElementById('bLodge').textContent = hasLodge ? (lodgeTotal + ' €') : '—';
+  document.getElementById('bLodgePP').textContent = hasLodge ? (Math.round(lodgeTotal / 3) + ' € / pers.') : '';
+  
+  // Update Premium Chart
+  document.getElementById('bChartVal').textContent = Math.round(total / 3).toLocaleString() + ' €';
 }
+
+// ═══ COUNTDOWN ═══
+function updateCountdown() {
+  const target = new Date("2026-10-09T08:00:00").getTime();
+  const now = new Date().getTime();
+  const diff = target - now;
+  
+  if (diff > 0) {
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    
+    document.getElementById('cd-d').textContent = d;
+    document.getElementById('cd-h').textContent = h;
+    document.getElementById('cd-m').textContent = m;
+  } else {
+    document.getElementById('countdown').innerHTML = '<div class="cd-box" style="width:100%;"><span style="font-size:1rem;">C\'est le grand départ ! ✈️</span></div>';
+  }
+}
+setInterval(updateCountdown, 60000);
+updateCountdown();
 
 // ═══ TOAST ═══
 function showToast() {

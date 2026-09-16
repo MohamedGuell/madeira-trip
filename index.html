@@ -1436,12 +1436,12 @@ function initMap() {
         ]
       },
       { 
-        name: "São Vicente", lat: 32.8041, lng: -17.0450, 
-        desc: "Notre Base Nord 🌊 Côtes sauvages et piscines naturelles.",
+        name: "Pico Ruivo", lat: 32.7589, lng: -16.9436, 
+        desc: "Rando ⛰️ Le plus haut sommet de Madère (1862m).",
         activities: [
-          { name: "Grottes de São Vicente", price: "8 €" },
-          { name: "Piscines naturelles (Porto Moniz)", price: "3 €" },
-          { name: "Route côtière VE2", price: "Essence" }
+          { name: "Rando PR1 (Pico Arieiro -> Ruivo)", price: "Gratuit" },
+          { name: "Lever de soleil au sommet", price: "Inestimable" },
+          { name: "Café au refuge (Casa de Abrigo)", price: "2-5 €" }
         ]
       },
       { 
@@ -1454,22 +1454,12 @@ function initMap() {
         ]
       },
       { 
-        name: "Funchal", lat: 32.6500, lng: -16.9082, 
-        desc: "Dernière nuit 🏙️ Capitale animée et jardins tropicaux.",
+        name: "São Vicente", lat: 32.8041, lng: -17.0450, 
+        desc: "Notre Base Nord 🌊 Côtes sauvages et piscines naturelles.",
         activities: [
-          { name: "Téléphérique de Monte", price: "18 €" },
-          { name: "Jardin Botanique", price: "7.50 €" },
-          { name: "Descente en traîneau d'osier", price: "30 € / 2 pers" },
-          { name: "Marché des Laboureurs (Mercado)", price: "Gratuit" }
-        ]
-      },
-      { 
-        name: "Pico Ruivo", lat: 32.7589, lng: -16.9436, 
-        desc: "Rando ⛰️ Le plus haut sommet de Madère (1862m).",
-        activities: [
-          { name: "Rando PR1 (Pico Arieiro -> Ruivo)", price: "Gratuit" },
-          { name: "Lever de soleil au sommet", price: "Inestimable" },
-          { name: "Café au refuge (Casa de Abrigo)", price: "2-5 €" }
+          { name: "Grottes de São Vicente", price: "8 €" },
+          { name: "Piscines naturelles (Porto Moniz)", price: "3 €" },
+          { name: "Route côtière VE2", price: "Essence" }
         ]
       },
       { 
@@ -1480,29 +1470,47 @@ function initMap() {
           { name: "Cascade de Risco (PR6.1)", price: "Gratuit" },
           { name: "Navette retour (optionnelle)", price: "3 €" }
         ]
+      },
+      { 
+        name: "Funchal", lat: 32.6500, lng: -16.9082, 
+        desc: "Dernière nuit 🏙️ Capitale animée et jardins tropicaux.",
+        activities: [
+          { name: "Téléphérique de Monte", price: "18 €" },
+          { name: "Jardin Botanique", price: "7.50 €" },
+          { name: "Descente en traîneau d'osier", price: "30 € / 2 pers" },
+          { name: "Marché des Laboureurs (Mercado)", price: "Gratuit" }
+        ]
       }
     ];
 
-    points.forEach(p => {
-      // Wrapper pour Mapbox (qui utilise 'transform: translate' pour positionner le pin)
+    points.forEach((p, index) => {
+      // Wrapper pour Mapbox
       const el = document.createElement('div');
-      el.style.width = '22px';
-      el.style.height = '22px';
+      el.style.width = '26px';
+      el.style.height = '26px';
       el.style.cursor = 'pointer';
       
-      // Point visuel qu'on peut animer librement
+      // Point visuel
       const dot = document.createElement('div');
+      dot.innerText = (index + 1).toString();
+      dot.style.display = 'flex';
+      dot.style.alignItems = 'center';
+      dot.style.justifyContent = 'center';
+      dot.style.color = '#fff';
+      dot.style.fontWeight = 'bold';
+      dot.style.fontSize = '12px';
+      dot.style.fontFamily = 'var(--font)';
       dot.style.background = 'var(--accent)';
       dot.style.width = '100%';
       dot.style.height = '100%';
       dot.style.borderRadius = '50%';
-      dot.style.border = '3px solid #fff';
+      dot.style.border = '2.5px solid #fff';
       dot.style.boxShadow = '0 0 15px rgba(0,0,0,0.5)';
       dot.style.transition = 'transform 0.2s';
       
       el.appendChild(dot);
       
-      el.addEventListener('mouseenter', () => dot.style.transform = 'scale(1.3)');
+      el.addEventListener('mouseenter', () => dot.style.transform = 'scale(1.2)');
       el.addEventListener('mouseleave', () => dot.style.transform = 'scale(1)');
 
       new mapboxgl.Marker(el)
@@ -1513,7 +1521,6 @@ function initMap() {
         e.stopPropagation();
         
         // Fly to the marker with a cinematic 3D angle
-        // Add padding to shift the marker to the left, so the 300px right panel doesn't cover it
         map.flyTo({
           center: [p.lng, p.lat],
           zoom: 13.5,
@@ -1526,6 +1533,53 @@ function initMap() {
 
         openMapPanel(p);
       });
+    });
+
+    // Draw route line
+    const coords = points.map(p => [p.lng, p.lat]);
+    map.addSource('route', {
+      'type': 'geojson',
+      'data': {
+        'type': 'Feature',
+        'properties': {},
+        'geometry': {
+          'type': 'LineString',
+          'coordinates': coords
+        }
+      }
+    });
+
+    // Glow layer
+    map.addLayer({
+      'id': 'route-glow',
+      'type': 'line',
+      'source': 'route',
+      'layout': {
+        'line-join': 'round',
+        'line-cap': 'round'
+      },
+      'paint': {
+        'line-color': '#e8913a',
+        'line-width': 10,
+        'line-opacity': 0.3,
+        'line-blur': 4
+      }
+    });
+
+    // Main dashed line
+    map.addLayer({
+      'id': 'route',
+      'type': 'line',
+      'source': 'route',
+      'layout': {
+        'line-join': 'round',
+        'line-cap': 'round'
+      },
+      'paint': {
+        'line-color': '#e8913a',
+        'line-width': 4,
+        'line-dasharray': [1.5, 2]
+      }
     });
     
     // Close panel if map is clicked

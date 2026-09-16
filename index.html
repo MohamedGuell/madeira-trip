@@ -191,6 +191,60 @@ footer .heart{color:#e07a5f}
 
 @media(min-width:520px){.container{padding:0 22px}}
 @media(min-width:768px){.container{max-width:600px}}
+/* ── Album Photo ── */
+.masonry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-auto-rows: 10px;
+  gap: 12px;
+  justify-content: center;
+}
+.photo-item {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: zoom-in;
+  background: #eee;
+}
+.photo-item:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+.photo-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.lightbox {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.9);
+  z-index: 10000;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  cursor: zoom-out;
+}
+.lightbox.active {
+  display: flex;
+  opacity: 1;
+}
+.lightbox img {
+  max-width: 100%;
+  max-height: 90vh;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  transform: scale(0.9);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.lightbox.active img {
+  transform: scale(1);
+}
 </style>
 </head>
 <body>
@@ -706,22 +760,28 @@ footer .heart{color:#e07a5f}
   <div class="container">
     <div style="text-align:center; margin-bottom: 24px;">
       <h2 style="font-size:1.6rem; font-weight:800; color:var(--accent); margin-bottom:6px;">📸 L'Album Souvenirs</h2>
-      <p style="font-size:.85rem; color:var(--text-soft); max-width:400px; margin:0 auto;">Vos photos du Drive s'affichent ici automatiquement.</p>
+      <p style="font-size:.85rem; color:var(--text-soft); max-width:400px; margin:0 auto;">Toutes les photos ajoutées au Drive s'affichent ici.</p>
     </div>
     
-    <div style="background:#fff; border-radius:24px; padding:8px; box-shadow: 0 12px 40px rgba(0,0,0,0.08); position:relative; overflow:hidden;">
-      <div style="background:#f8f9fa; border-radius:18px; overflow:hidden; position:relative;">
-        <iframe src="https://drive.google.com/embeddedfolderview?id=1bKSJeVb_qGwkJbjIZeUmXumGtC3GHij_#grid" width="100%" height="550" style="border:none; display:block;"></iframe>
+    <!-- Grille Maçonnerie -->
+    <div id="photo-grid" class="masonry-grid">
+      <div style="text-align:center; padding:40px; color:#888; grid-column: 1 / -1;">
+        ⏳ Chargement de l'album...
       </div>
     </div>
     
-    <div style="text-align:center; margin-top:20px;">
+    <div style="text-align:center; margin-top:24px;">
       <a href="https://drive.google.com/drive/folders/1bKSJeVb_qGwkJbjIZeUmXumGtC3GHij_?usp=drive_link" target="_blank" style="display:inline-flex; align-items:center; gap:8px; background:var(--accent); color:#fff; padding:10px 20px; border-radius:999px; text-decoration:none; font-size:.8rem; font-weight:700; box-shadow:0 4px 15px rgba(42, 111, 151, 0.3); transition:transform 0.2s;">
-        <span>☁️</span> Ouvrir dans Google Drive
+        <span>☁️</span> Ajouter des photos via Drive
       </a>
     </div>
   </div>
 </section>
+
+<!-- Lightbox pour voir les photos en grand -->
+<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="Zoom">
+</div>
 
 <!-- ═══ NOTES & COMMENTAIRES ═══ -->
 <section class="notes-section" id="notes">
@@ -1029,9 +1089,51 @@ function go(id) {
   window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - off, behavior: 'smooth' });
 }
 
+// ═══ ALBUM ═══
+async function loadAlbum() {
+  const grid = document.getElementById('photo-grid');
+  if(!grid) return;
+  const apiKey = "AIzaSyCIzKf4AQ0SK5ti0rDcpyUr1fSgVE-PurY";
+  const folderId = "1bKSJeVb_qGwkJbjIZeUmXumGtC3GHij_";
+  const url = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents&fields=files(id,name,mimeType,thumbnailLink)&key=${apiKey}`;
+  
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    if(data.error) throw new Error(data.error.message);
+    
+    const files = data.files.filter(f => f.mimeType.startsWith('image/'));
+    if(files.length === 0) {
+      grid.innerHTML = '<div style="text-align:center; padding:40px; color:#888; grid-column: 1 / -1;">Aucune photo trouvée dans le dossier.</div>';
+      return;
+    }
+    
+    grid.innerHTML = files.map((f, i) => {
+      // Use higher res thumbnail (w800 is good for a masonry grid, or s800)
+      const hqThumb = f.thumbnailLink.replace('=s220', '=s800');
+      // Random row span for masonry effect (between 12 and 24 rows of 10px = 120px to 240px)
+      const span = Math.floor(Math.random() * 12) + 12;
+      return `<div class="photo-item" style="grid-row: span ${span};" onclick="openLightbox('${hqThumb.replace('=s800', '=s1600')}')">
+        <img src="${hqThumb}" alt="${f.name}" loading="lazy">
+      </div>`;
+    }).join('');
+  } catch (err) {
+    console.error(err);
+    grid.innerHTML = `<div style="text-align:center; padding:40px; color:#d9534f; grid-column: 1 / -1;">Impossible de charger les photos. Assurez-vous que l'API Drive est bien activée et que le dossier est public.</div>`;
+  }
+}
+function openLightbox(url) {
+  document.getElementById('lightbox-img').src = url;
+  document.getElementById('lightbox').classList.add('active');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+}
+
 // ═══ INIT ═══
 updatePills();
 updateBudget();
+loadAlbum();
 </script>
 </body>
 </html>

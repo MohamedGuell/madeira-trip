@@ -702,41 +702,26 @@ footer .heart{color:#e07a5f}
 </section>
 
 <!-- ═══ ALBUM PHOTO ═══ -->
-<section class="info-section" id="album">
+<section class="info-section" id="album" style="padding-top:10px;">
   <div class="container">
-    <div class="info-card" style="padding:0; overflow:hidden;">
-      <h2 style="padding: 20px 16px 5px;">📸 Album Souvenirs</h2>
-      <p style="padding: 0 16px 14px; font-size:.75rem; color:var(--text-soft);">Les photos ajoutées à votre dossier Google Drive partagé apparaissent automatiquement ici.</p>
-      
-      <div id="drive-iframe-container" style="position:relative; width:100%; height:450px; background:#f8f9fa;">
-        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; color:#888;">
-          <span style="font-size:2rem; display:block; margin-bottom:10px;">📁</span>
-          <p style="font-size:0.8rem;">Chargez votre dossier Drive<br><br><button onclick="loadDrive()" style="padding:6px 12px; border:none; background:var(--accent); color:#fff; border-radius:6px; cursor:pointer;">Configurer l'Album</button></p>
-        </div>
+    <div style="text-align:center; margin-bottom: 24px;">
+      <h2 style="font-size:1.6rem; font-weight:800; color:var(--accent); margin-bottom:6px;">📸 L'Album Souvenirs</h2>
+      <p style="font-size:.85rem; color:var(--text-soft); max-width:400px; margin:0 auto;">Vos photos du Drive s'affichent ici automatiquement.</p>
+    </div>
+    
+    <div style="background:#fff; border-radius:24px; padding:8px; box-shadow: 0 12px 40px rgba(0,0,0,0.08); position:relative; overflow:hidden;">
+      <div style="background:#f8f9fa; border-radius:18px; overflow:hidden; position:relative;">
+        <iframe src="https://drive.google.com/embeddedfolderview?id=1bKSJeVb_qGwkJbjIZeUmXumGtC3GHij_#grid" width="100%" height="550" style="border:none; display:block;"></iframe>
       </div>
-
+    </div>
+    
+    <div style="text-align:center; margin-top:20px;">
+      <a href="https://drive.google.com/drive/folders/1bKSJeVb_qGwkJbjIZeUmXumGtC3GHij_?usp=drive_link" target="_blank" style="display:inline-flex; align-items:center; gap:8px; background:var(--accent); color:#fff; padding:10px 20px; border-radius:999px; text-decoration:none; font-size:.8rem; font-weight:700; box-shadow:0 4px 15px rgba(42, 111, 151, 0.3); transition:transform 0.2s;">
+        <span>☁️</span> Ouvrir dans Google Drive
+      </a>
     </div>
   </div>
 </section>
-
-<script>
-function loadDrive() {
-  const folderLink = prompt("🔗 Collez le lien (ou l'ID) de votre dossier Google Drive :\n\nAttention : Le dossier doit être partagé en mode 'Tous les utilisateurs disposant du lien peuvent voir'.");
-  if(!folderLink) return;
-  
-  let folderId = folderLink;
-  // Extraire l'ID du lien complet
-  if(folderLink.includes('drive.google.com/drive/folders/')) {
-    folderId = folderLink.split('/folders/')[1].split('?')[0];
-  } else if (folderLink.includes('id=')) {
-    folderId = folderLink.split('id=')[1].split('&')[0];
-  }
-
-  // Sauvegarder dans Firebase
-  tripRef.child('albumFolderId').set(folderId);
-  showToast();
-}
-</script>
 
 <!-- ═══ NOTES & COMMENTAIRES ═══ -->
 <section class="notes-section" id="notes">
@@ -818,24 +803,12 @@ tripRef.on('value', snap => {
   applyLodgePrices(data.lodgePrices || {});
   applyBudgetPrices(data.budgetPrices || {});
   applyPrepChecks(data.prepChecks || {});
-  applyAlbum(data.albumFolderId);
   updateBudget();
   isApplying = false;
 });
 
 // ═══ APPLY FUNCTIONS ═══
-function applyAlbum(folderId) {
-  const container = document.getElementById('drive-iframe-container');
-  if (!container) return;
-  if (folderId && folderId.trim() !== '') {
-    container.innerHTML = `<iframe src="https://drive.google.com/embeddedfolderview?id=${folderId}#grid" width="100%" height="450" style="border:none;"></iframe><button onclick="loadDrive()" style="position:absolute; bottom:10px; right:10px; background:var(--accent); color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:0.7rem; cursor:pointer; opacity:0.8;">⚙️ Modifier le dossier</button>`;
-  } else {
-    container.innerHTML = `<div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; color:#888;">
-      <span style="font-size:2rem; display:block; margin-bottom:10px;">📁</span>
-      <p style="font-size:0.8rem;">Chargez votre dossier Drive<br><br><button onclick="loadDrive()" style="padding:6px 12px; border:none; background:var(--accent); color:#fff; border-radius:6px; cursor:pointer;">Configurer l'Album</button></p>
-    </div>`;
-  }
-}
+
 
 function applyVotes(votes) {
   // Reset all vote buttons first

@@ -6,8 +6,8 @@
 <title>Madeira — 9-16 Oct · Planning Voyage</title>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -275,6 +275,72 @@ footer .heart{color:#e07a5f}
   backdrop-filter: blur(4px);
 }
 .sleek-tooltip::before { display: none; }
+
+/* MAPBOX CUSTOM CSS */
+.mapboxgl-popup-content {
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  padding: 10px 14px;
+  font-family: var(--font);
+  border: none;
+}
+.map-panel {
+  position: absolute;
+  top: 0;
+  right: -350px;
+  width: 300px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: -4px 0 15px rgba(0,0,0,0.1);
+  transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  z-index: 10;
+  padding: 20px;
+  border-radius: 18px 0 0 18px;
+  overflow-y: auto;
+}
+.map-panel.active {
+  right: 0;
+}
+.panel-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+}
+.panel-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+.panel-desc {
+  font-size: 0.9rem;
+  color: var(--text-soft);
+  margin-bottom: 15px;
+}
+.activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.activity-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 0.9rem;
+}
+.activity-item:last-child {
+  border-bottom: none;
+}
+.act-name { font-weight: 600; color: #333; }
+.act-price { font-weight: 700; color: var(--accent); }
 </style>
 </head>
 <body>
@@ -306,7 +372,19 @@ footer .heart{color:#e07a5f}
 <section id="map-section" style="padding-top:20px;">
   <div class="container">
     <div style="background:#fff; border-radius:24px; box-shadow:var(--shadow); padding:8px; position:relative; overflow:hidden;">
-      <div id="madeira-map" style="width:100%; height:350px; border-radius:18px; z-index:1;"></div>
+      <div id="madeira-map" style="width:100%; height:450px; border-radius:18px; z-index:1;"></div>
+      
+      <!-- Side Panel overlay -->
+      <div id="map-panel" class="map-panel">
+        <button class="panel-close" onclick="closeMapPanel()">×</button>
+        <h3 id="panel-title" class="panel-title">Lieu</h3>
+        <p id="panel-desc" class="panel-desc">Description du lieu.</p>
+        
+        <h4 style="font-size:0.9rem; text-transform:uppercase; color:#999; letter-spacing:1px; margin-bottom:8px;">Activités & Coûts</h4>
+        <ul id="panel-activities" class="activity-list">
+          <!-- Populated by JS -->
+        </ul>
+      </div>
     </div>
   </div>
 </section>
@@ -1251,39 +1329,174 @@ function closeLightbox() {
 }
 
 // ═══ MAP INIT ═══
+let map;
+
 function initMap() {
-  const map = L.map('madeira-map').setView([32.75, -16.96], 10);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap &copy; CARTO',
-    subdomains: 'abcd',
-    maxZoom: 19
-  }).addTo(map);
-
-  const points = [
-    { name: "Machico", lat: 32.7180, lng: -16.7667, info: "Base Est 📍<br>Rando Ponta de São Lourenço" },
-    { name: "São Vicente", lat: 32.8041, lng: -17.0450, info: "Base Nord 🌊<br>Piscines naturelles, Grottes" },
-    { name: "Ponta Delgada", lat: 32.8239, lng: -16.9881, info: "Base Nord 🌿<br>Tranquillité, falaises" },
-    { name: "Funchal", lat: 32.6500, lng: -16.9082, info: "Dernière nuit 🏙️<br>Marché, Téléphérique" },
-    { name: "Pico Ruivo", lat: 32.7589, lng: -16.9436, info: "Rando ⛰️<br>Plus haut sommet (1862m)" },
-    { name: "Rabaçal", lat: 32.7630, lng: -17.1337, info: "Levada 💧<br>25 Fontes, Cascade de Risco" }
-  ];
-
-  const customIcon = L.divIcon({
-    className: 'custom-pin',
-    html: `<div style="background:var(--accent); color:#fff; width:16px; height:16px; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 5px rgba(0,0,0,0.3);"></div>`,
-    iconSize: [16, 16],
-    iconAnchor: [8, 8]
+  // IMPORTANT: Remplacez cette clé par votre propre clé Mapbox (gratuite sur mapbox.com)
+  mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN';
+  
+  map = new mapboxgl.Map({
+    container: 'madeira-map',
+    style: 'mapbox://styles/mapbox/outdoors-v12',
+    center: [-16.96, 32.75],
+    zoom: 9.5,
+    pitch: 45,
+    bearing: -10
   });
 
-  points.forEach(p => {
-    L.marker([p.lat, p.lng], {icon: customIcon})
-      .bindTooltip(`<b>${p.name}</b><br><span style="font-size:0.8rem;color:#555;">${p.info}</span>`, {
-        direction: 'top',
-        className: 'sleek-tooltip',
-        offset: [0, -10]
-      })
-      .addTo(map);
+  map.on('load', () => {
+    // Add 3D terrain
+    map.addSource('mapbox-dem', {
+      'type': 'raster-dem',
+      'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+      'tileSize': 512,
+      'maxzoom': 14
+    });
+    map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
+
+    // Add sky layer for immersive look
+    map.addLayer({
+      'id': 'sky',
+      'type': 'sky',
+      'paint': {
+        'sky-type': 'atmosphere',
+        'sky-atmosphere-sun': [0.0, 0.0],
+        'sky-atmosphere-sun-intensity': 15
+      }
+    });
+
+    const points = [
+      { 
+        name: "Machico", lat: 32.7180, lng: -16.7667, 
+        desc: "Notre Base Est 📍 Idéal pour explorer la pointe est de l'île.",
+        activities: [
+          { name: "Rando Ponta de São Lourenço", price: "Gratuit" },
+          { name: "Plage de sable (Praia de Machico)", price: "Gratuit" },
+          { name: "Miradouro do Pico do Facho", price: "Gratuit" }
+        ]
+      },
+      { 
+        name: "São Vicente", lat: 32.8041, lng: -17.0450, 
+        desc: "Notre Base Nord 🌊 Côtes sauvages et piscines naturelles.",
+        activities: [
+          { name: "Grottes de São Vicente", price: "8 €" },
+          { name: "Piscines naturelles (Porto Moniz)", price: "3 €" },
+          { name: "Route côtière VE2", price: "Essence" }
+        ]
+      },
+      { 
+        name: "Ponta Delgada", lat: 32.8239, lng: -16.9881, 
+        desc: "Notre Base Nord 🌿 Tranquillité, falaises et nature luxuriante.",
+        activities: [
+          { name: "Complexe Balnéaire (Piscines)", price: "2.50 €" },
+          { name: "Miradouro do Bom Jesus", price: "Gratuit" },
+          { name: "Église Senhor do Bom Jesus", price: "Gratuit" }
+        ]
+      },
+      { 
+        name: "Funchal", lat: 32.6500, lng: -16.9082, 
+        desc: "Dernière nuit 🏙️ Capitale animée et jardins tropicaux.",
+        activities: [
+          { name: "Téléphérique de Monte", price: "18 €" },
+          { name: "Jardin Botanique", price: "7.50 €" },
+          { name: "Descente en traîneau d'osier", price: "30 € / 2 pers" },
+          { name: "Marché des Laboureurs (Mercado)", price: "Gratuit" }
+        ]
+      },
+      { 
+        name: "Pico Ruivo", lat: 32.7589, lng: -16.9436, 
+        desc: "Rando ⛰️ Le plus haut sommet de Madère (1862m).",
+        activities: [
+          { name: "Rando PR1 (Pico Arieiro -> Ruivo)", price: "Gratuit" },
+          { name: "Lever de soleil au sommet", price: "Inestimable" },
+          { name: "Café au refuge (Casa de Abrigo)", price: "2-5 €" }
+        ]
+      },
+      { 
+        name: "Rabaçal", lat: 32.7630, lng: -17.1337, 
+        desc: "Levada 💧 Forêt magique et cascades rafraîchissantes.",
+        activities: [
+          { name: "Levada das 25 Fontes (PR6)", price: "Gratuit" },
+          { name: "Cascade de Risco (PR6.1)", price: "Gratuit" },
+          { name: "Navette retour (optionnelle)", price: "3 €" }
+        ]
+      }
+    ];
+
+    points.forEach(p => {
+      const el = document.createElement('div');
+      el.style.background = 'var(--accent)';
+      el.style.width = '22px';
+      el.style.height = '22px';
+      el.style.borderRadius = '50%';
+      el.style.border = '3px solid #fff';
+      el.style.boxShadow = '0 0 15px rgba(0,0,0,0.5)';
+      el.style.cursor = 'pointer';
+      el.style.transition = 'transform 0.2s';
+      
+      el.addEventListener('mouseenter', () => el.style.transform = 'scale(1.3)');
+      el.addEventListener('mouseleave', () => el.style.transform = 'scale(1)');
+
+      new mapboxgl.Marker(el)
+        .setLngLat([p.lng, p.lat])
+        .addTo(map);
+
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
+        // Fly to the marker with a cinematic 3D angle
+        map.flyTo({
+          center: [p.lng, p.lat],
+          zoom: 13.5,
+          pitch: 70,
+          bearing: (Math.random() * 60) - 30, // random dramatic angle
+          duration: 2500,
+          essential: true
+        });
+
+        openMapPanel(p);
+      });
+    });
+    
+    // Close panel if map is clicked
+    map.on('click', () => {
+      closeMapPanel();
+    });
   });
+}
+
+function openMapPanel(p) {
+  document.getElementById('panel-title').innerText = p.name;
+  document.getElementById('panel-desc').innerHTML = p.desc;
+  
+  const actList = document.getElementById('panel-activities');
+  actList.innerHTML = '';
+  
+  p.activities.forEach(act => {
+    const li = document.createElement('li');
+    li.className = 'activity-item';
+    li.innerHTML = `<span class="act-name">${act.name}</span> <span class="act-price">${act.price}</span>`;
+    actList.appendChild(li);
+  });
+  
+  document.getElementById('map-panel').classList.add('active');
+}
+
+function closeMapPanel() {
+  const panel = document.getElementById('map-panel');
+  if (panel && panel.classList.contains('active')) {
+    panel.classList.remove('active');
+    if(map) {
+      map.flyTo({
+        center: [-16.96, 32.75],
+        zoom: 9.5,
+        pitch: 45,
+        bearing: -10,
+        duration: 2500,
+        essential: true
+      });
+    }
+  }
 }
 
 // ═══ INIT ═══

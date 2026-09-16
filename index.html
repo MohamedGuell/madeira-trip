@@ -37,7 +37,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .nav .container::-webkit-scrollbar{display:none}
 .pill{flex-shrink:0;padding:7px 13px;border-radius:999px;font-size:.72rem;font-weight:600;cursor:pointer;border:none;background:#eee;color:var(--text-soft);transition:all .2s var(--ease);white-space:nowrap}
 .pill:hover,.pill.active{color:#fff;transform:scale(1.03)}
-.pill[data-s="lodging"]{--c:#c97b3a}.pill[data-s="budget"]{--c:#3a8558}.pill[data-s="east"]{--c:#b08968}.pill[data-s="north"]{--c:#52796f}.pill[data-s="funchal"]{--c:#7b6fa6}.pill[data-s="notes"]{--c:#6b8cae}.pill[data-s="prep"]{--c:#e07a5f}.pill[data-s="info"]{--c:#5b8c85}
+.pill[data-s="lodging"]{--c:#c97b3a}.pill[data-s="budget"]{--c:#3a8558}.pill[data-s="east"]{--c:#b08968}.pill[data-s="north"]{--c:#52796f}.pill[data-s="funchal"]{--c:#7b6fa6}.pill[data-s="notes"]{--c:#6b8cae}.pill[data-s="prep"]{--c:#e07a5f}.pill[data-s="info"]{--c:#5b8c85}.pill[data-s="album"]{--c:#d4a373}
 .pill:hover,.pill.active{background:var(--c);box-shadow:0 3px 12px color-mix(in srgb,var(--c) 35%,transparent)}
 
 /* ── Section ── */
@@ -213,6 +213,7 @@ footer .heart{color:#e07a5f}
     <button class="pill" data-s="funchal" onclick="go('funchal')">🏘️ Funchal</button>
     <button class="pill" data-s="prep" onclick="go('prep')">🧳 Prép.</button>
     <button class="pill" data-s="info" onclick="go('info')">ℹ️ Infos</button>
+    <button class="pill" data-s="album" onclick="go('album')">📸 Album</button>
     <button class="pill" data-s="notes" onclick="go('notes')">💬 Notes</button>
   </div>
 </nav>
@@ -692,7 +693,6 @@ footer .heart{color:#e07a5f}
         <div class="info-item"><span class="ii-icon">🚗</span><span class="ii-label">Conduite</span><span class="ii-value">À droite, comme en France</span></div>
         <div class="info-item"><span class="ii-icon">📶</span><span class="ii-label">Réseau</span><span class="ii-value">4G/5G · Roaming UE inclus</span></div>
         <div class="info-item"><span class="ii-icon">💰</span><span class="ii-label">Pourboires</span><span class="ii-value">Non obligatoires, 5-10% apprécié</span></div>
-        <div class="info-item"><span class="ii-icon">🗣️</span><span class="ii-label">Langue</span><span class="ii-value">Portugais · Anglais très parlé</span></div>
       </div>
       <div class="info-meteo">
         🌤️ <strong>Météo octobre :</strong> 20–24°C côtes, 10–15°C en montagne. Pluie possible en altitude (nord + sommets). Prévoir une veste imperméable pour les randos. Le sud est généralement ensoleillé.
@@ -700,6 +700,43 @@ footer .heart{color:#e07a5f}
     </div>
   </div>
 </section>
+
+<!-- ═══ ALBUM PHOTO ═══ -->
+<section class="info-section" id="album">
+  <div class="container">
+    <div class="info-card" style="padding:0; overflow:hidden;">
+      <h2 style="padding: 20px 16px 5px;">📸 Album Souvenirs</h2>
+      <p style="padding: 0 16px 14px; font-size:.75rem; color:var(--text-soft);">Les photos ajoutées à votre dossier Google Drive partagé apparaissent automatiquement ici.</p>
+      
+      <div id="drive-iframe-container" style="position:relative; width:100%; height:450px; background:#f8f9fa;">
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; color:#888;">
+          <span style="font-size:2rem; display:block; margin-bottom:10px;">📁</span>
+          <p style="font-size:0.8rem;">Chargez votre dossier Drive<br><br><button onclick="loadDrive()" style="padding:6px 12px; border:none; background:var(--accent); color:#fff; border-radius:6px; cursor:pointer;">Configurer l'Album</button></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+function loadDrive() {
+  const folderLink = prompt("🔗 Collez le lien (ou l'ID) de votre dossier Google Drive :\n\nAttention : Le dossier doit être partagé en mode 'Tous les utilisateurs disposant du lien peuvent voir'.");
+  if(!folderLink) return;
+  
+  let folderId = folderLink;
+  // Extraire l'ID du lien complet
+  if(folderLink.includes('drive.google.com/drive/folders/')) {
+    folderId = folderLink.split('/folders/')[1].split('?')[0];
+  } else if (folderLink.includes('id=')) {
+    folderId = folderLink.split('id=')[1].split('&')[0];
+  }
+
+  // Sauvegarder dans Firebase
+  tripRef.child('albumFolderId').set(folderId);
+  showToast();
+}
+</script>
 
 <!-- ═══ NOTES & COMMENTAIRES ═══ -->
 <section class="notes-section" id="notes">
@@ -781,11 +818,25 @@ tripRef.on('value', snap => {
   applyLodgePrices(data.lodgePrices || {});
   applyBudgetPrices(data.budgetPrices || {});
   applyPrepChecks(data.prepChecks || {});
+  applyAlbum(data.albumFolderId);
   updateBudget();
   isApplying = false;
 });
 
 // ═══ APPLY FUNCTIONS ═══
+function applyAlbum(folderId) {
+  const container = document.getElementById('drive-iframe-container');
+  if (!container) return;
+  if (folderId && folderId.trim() !== '') {
+    container.innerHTML = `<iframe src="https://drive.google.com/embeddedfolderview?id=${folderId}#grid" width="100%" height="450" style="border:none;"></iframe><button onclick="loadDrive()" style="position:absolute; bottom:10px; right:10px; background:var(--accent); color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:0.7rem; cursor:pointer; opacity:0.8;">⚙️ Modifier le dossier</button>`;
+  } else {
+    container.innerHTML = `<div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; color:#888;">
+      <span style="font-size:2rem; display:block; margin-bottom:10px;">📁</span>
+      <p style="font-size:0.8rem;">Chargez votre dossier Drive<br><br><button onclick="loadDrive()" style="padding:6px 12px; border:none; background:var(--accent); color:#fff; border-radius:6px; cursor:pointer;">Configurer l'Album</button></p>
+    </div>`;
+  }
+}
+
 function applyVotes(votes) {
   // Reset all vote buttons first
   document.querySelectorAll('.vote-btn').forEach(b => b.classList.remove('active'));

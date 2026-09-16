@@ -137,6 +137,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .select-lodge-btn{display:block;width:100%;padding:8px;border:none;border-radius:8px;font-size:.78rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:8px}
 .select-lodge-btn{background:#e8f5e9;color:#2e7d32}.select-lodge-btn:hover{background:#c8e6c9}.select-lodge-btn:active{transform:scale(0.98)!important}
 .select-lodge-btn.chosen{background:var(--green);color:#fff}
+.book-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:8px;font-size:0.75rem;font-weight:700;text-decoration:none;color:#fff;transition:all 0.2s var(--ease);text-transform:uppercase;letter-spacing:0.5px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+.book-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+.book-btn.bb-airbnb{background:#FF5A5F;}
+.book-btn.bb-booking{background:#003580;}
+.book-btn.bb-trip{background:#0f294d;}
 
 /* ═══ EDITABLE PRICE ═══ */
 .price-edit{width:55px;border:none;border-bottom:1.5px dashed #bbb;background:transparent;font-weight:700;font-size:inherit;color:inherit;text-align:right;font-family:inherit;padding:0 2px;transition:border-color .2s}
@@ -462,7 +467,7 @@ footer .heart{color:#e07a5f}
           </div>
         </div>
         <div style="margin-bottom: 10px;">
-          <a href="https://fr.airbnb.com/rooms/26884921" target="_blank" style="display:inline-block; font-size:0.75rem; background:var(--accent); color:#fff; padding:4px 10px; border-radius:6px; text-decoration:none; font-weight:600;">👁️ Voir sur Airbnb</a>
+          <a href="https://fr.airbnb.com/rooms/26884921" target="_blank" class="book-btn bb-airbnb">🏨 Book Now / View</a>
         </div>
         <div class="lodge-votes">
           <span class="vote-label">Vincent</span>
@@ -491,7 +496,7 @@ footer .heart{color:#e07a5f}
           </div>
         </div>
         <div style="margin-bottom: 10px;">
-          <a href="https://www.booking.com/hotel/pt/charming-retreat-machico-5-min-praia-amp-centro-b.fr.html" target="_blank" style="display:inline-block; font-size:0.75rem; background:#003580; color:#fff; padding:4px 10px; border-radius:6px; text-decoration:none; font-weight:600;">👁️ Voir sur Booking</a>
+          <a href="https://www.booking.com/hotel/pt/charming-retreat-machico-5-min-praia-amp-centro-b.fr.html" target="_blank" class="book-btn bb-booking">🏨 Book Now / View</a>
         </div>
         <div class="lodge-votes">
           <span class="vote-label">Vincent</span>
@@ -520,7 +525,7 @@ footer .heart{color:#e07a5f}
           </div>
         </div>
         <div style="margin-bottom: 10px;">
-          <a href="https://www.booking.com/hotel/pt/discovery-i.fr.html" target="_blank" style="display:inline-block; font-size:0.75rem; background:#003580; color:#fff; padding:4px 10px; border-radius:6px; text-decoration:none; font-weight:600;">👁️ Voir sur Booking</a>
+          <a href="https://www.booking.com/hotel/pt/discovery-i.fr.html" target="_blank" class="book-btn bb-booking">🏨 Book Now / View</a>
         </div>
         <div class="lodge-votes">
           <span class="vote-label">Vincent</span>
@@ -549,7 +554,7 @@ footer .heart{color:#e07a5f}
           </div>
         </div>
         <div style="margin-bottom: 10px;">
-          <a href="https://fr.trip.com/hotels/detail/?hotelId=133370350" target="_blank" style="display:inline-block; font-size:0.75rem; background:#0f294d; color:#fff; padding:4px 10px; border-radius:6px; text-decoration:none; font-weight:600;">👁️ Voir sur Trip.com</a>
+          <a href="https://fr.trip.com/hotels/detail/?hotelId=133370350" target="_blank" class="book-btn bb-trip">🏨 Book Now / View</a>
         </div>
         <div class="lodge-votes">
           <span class="vote-label">Vincent</span>
@@ -1510,7 +1515,7 @@ function initMap() {
           zoom: 13.5,
           pitch: 70,
           bearing: (Math.random() * 60) - 30, // random dramatic angle
-          padding: { right: 320 }, // Shift center to the left to account for panel
+          offset: [-120, 0], // Shift center to the left to account for panel
           duration: 2500,
           essential: true
         });
@@ -1553,7 +1558,7 @@ function closeMapPanel() {
         zoom: 9.5,
         pitch: 45,
         bearing: -10,
-        padding: { right: 0 },
+        offset: [0, 0],
         duration: 2500,
         essential: true
       });
@@ -1627,5 +1632,6 @@ setTimeout(initCustomCursor, 500); // Initialize after DOM elements are fully lo
 </script>
 </body>
 </html>
+
 
 

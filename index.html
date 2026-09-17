@@ -461,6 +461,7 @@ footer .heart{color:#e07a5f}
 [data-theme="dark"] .budget-card { background: linear-gradient(135deg, #18241d, #1a241f); border-color: rgba(255,255,255,0.05); }
 [data-theme="dark"] .budget-strip, [data-theme="dark"] .b-row { background: #222; border-color: rgba(255,255,255,0.05); }
 [data-theme="dark"] .bs-block { border-color: rgba(255,255,255,0.05); }
+[data-theme="dark"] .budget-note { background: rgba(255,255,255,0.05); color: #ccc; }
 [data-theme="dark"] .prep-check { background: #333; border-color: #555; }
 [data-theme="dark"] .info-item { background: #262626; }
 [data-theme="dark"] .info-meteo { background: linear-gradient(135deg, #152c3f, #2d1e33); }
@@ -469,6 +470,7 @@ footer .heart{color:#e07a5f}
 [data-theme="dark"] .tb-btn.reset { background: #333; color: #ccc; }
 [data-theme="dark"] .alert { background: #382810; color: #f0a830; border-color: #f0a830; }
 [data-theme="dark"] .order-tip { background: #132a40; color: #5b9bd5; border-color: #5b9bd5; }
+[data-theme="dark"] .bonus-card { background: linear-gradient(135deg, #102416, #162a1a); border-color: #388e3c; color: #a5d6a7; }
 [data-theme="dark"] .photo-item { background: #222; }
 [data-theme="dark"] .photo-caption { color: #ccc; }
 [data-theme="dark"] .map-panel { background: rgba(30, 30, 30, 0.95); color: #eee; }
@@ -586,7 +588,7 @@ footer .heart{color:#e07a5f}
           <button class="vote-btn bof" onclick="vote('machico-A','caro','bof')">Bof</button>
           <button class="vote-btn non" onclick="vote('machico-A','caro','non')">Non</button>
         </div>
-        <button class="select-lodge-btn" onclick="selectLodge('machico-A')">✓ Choisir cette option</button>
+        <button class="select-lodge-btn" onclick="selectLodge('etape1','machico-A')">✓ Choisir cette option</button>
       </div>
 
       <div class="lodge-opt reveal" data-lodge="machico-B">
@@ -616,7 +618,7 @@ footer .heart{color:#e07a5f}
           <button class="vote-btn bof" onclick="vote('machico-B','caro','bof')">Bof</button>
           <button class="vote-btn non" onclick="vote('machico-B','caro','non')">Non</button>
         </div>
-        <button class="select-lodge-btn" onclick="selectLodge('machico-B')">✓ Choisir cette option</button>
+        <button class="select-lodge-btn" onclick="selectLodge('etape1','machico-B')">✓ Choisir cette option</button>
       </div>
 
       <div class="lodge-opt reveal" data-lodge="machico-C">
@@ -646,7 +648,7 @@ footer .heart{color:#e07a5f}
           <button class="vote-btn bof" onclick="vote('machico-C','caro','bof')">Bof</button>
           <button class="vote-btn non" onclick="vote('machico-C','caro','non')">Non</button>
         </div>
-        <button class="select-lodge-btn" onclick="selectLodge('machico-C')">✓ Choisir cette option</button>
+        <button class="select-lodge-btn" onclick="selectLodge('etape1','machico-C')">✓ Choisir cette option</button>
       </div>
 
       <div class="lodge-opt reveal" data-lodge="machico-D">
@@ -676,7 +678,7 @@ footer .heart{color:#e07a5f}
           <button class="vote-btn bof" onclick="vote('machico-D','caro','bof')">Bof</button>
           <button class="vote-btn non" onclick="vote('machico-D','caro','non')">Non</button>
         </div>
-        <button class="select-lodge-btn" onclick="selectLodge('machico-D')">✓ Choisir cette option</button>
+        <button class="select-lodge-btn" onclick="selectLodge('etape1','machico-D')">✓ Choisir cette option</button>
       </div>
 
       <!-- ── Étape 2: 12→15 oct ── -->

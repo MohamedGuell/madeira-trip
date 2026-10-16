@@ -260,74 +260,480 @@ footer .heart{color:#e07a5f}
 
 @media(min-width:520px){.container{padding:0 22px}}
 @media(min-width:768px){.container{max-width:600px}}
-/* ── Album Photo ── */
-.masonry-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  grid-auto-rows: 10px;
-  gap: 12px;
-  justify-content: center;
+/* ── Album Photo & Modern Gallery ── */
+.album-header-wrap {
+  text-align: center;
+  margin-bottom: 22px;
 }
-.photo-item {
-  border-radius: 4px;
+.album-badge-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 16px;
+  background: rgba(42, 111, 151, 0.1);
+  color: var(--accent);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(42, 111, 151, 0.15);
+}
+.album-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
+}
+.album-subtitle {
+  font-size: 0.86rem;
+  color: var(--text-soft);
+  max-width: 480px;
+  margin: 0 auto 16px;
+  line-height: 1.5;
+}
+.album-filters {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 4px 2px 10px;
+  margin-bottom: 12px;
+  -webkit-overflow-scrolling: touch;
+}
+.album-filters::-webkit-scrollbar { display: none; }
+.album-pill {
+  flex-shrink: 0;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: var(--card);
+  color: var(--text-soft);
+  transition: all 0.25s var(--ease);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+}
+.album-pill:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+.album-pill.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 4px 14px rgba(42, 111, 151, 0.35);
+  transform: scale(1.03);
+}
+.album-pill .badge-count {
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.07);
+}
+.album-pill.active .badge-count {
+  background: rgba(255,255,255,0.25);
+  color: #fff;
+}
+.album-controls-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--text-soft);
+  margin-bottom: 16px;
+  padding: 0 4px;
+  font-weight: 600;
+}
+.album-sort-btn {
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.album-sort-btn:hover {
+  background: rgba(42, 111, 151, 0.08);
+}
+
+/* Modern Photo Grid */
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+  gap: 12px;
+}
+@media (min-width: 520px) {
+  .album-grid {
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 16px;
+  }
+}
+@media (min-width: 768px) {
+  .album-grid {
+    grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+    gap: 18px;
+  }
+}
+
+.photo-card {
+  position: relative;
+  background: var(--card);
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background: #fff;
-  padding: 8px 8px 45px 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: all 0.35s var(--ease);
   display: flex;
   flex-direction: column;
+}
+.photo-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.12);
+  border-color: rgba(42, 111, 151, 0.3);
+}
+.photo-thumb-wrap {
   position: relative;
-}
-.photo-item:hover {
-  z-index: 10;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.3);
-  transform: scale(1.05) rotate(0deg) !important;
-}
-.photo-item img {
   width: 100%;
-  flex: 1;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #ede8e1;
+}
+.photo-thumb-wrap img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   display: block;
-  border-radius: 2px;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.photo-caption {
+.photo-card:hover .photo-thumb-wrap img {
+  transform: scale(1.08);
+}
+.photo-spot-chip {
   position: absolute;
-  bottom: 8px;
-  left: 0;
-  width: 100%;
-  text-align: center;
-  font-family: 'Caveat', cursive;
-  font-size: 1.4rem;
-  color: #333;
-  line-height: 1;
+  top: 8px;
+  left: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 2;
+  pointer-events: none;
 }
+.photo-video-chip {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  z-index: 2;
+}
+.photo-info {
+  padding: 10px 12px 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.photo-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.35;
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.photo-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  color: var(--text-soft);
+  font-weight: 600;
+}
+.photo-date {
+  opacity: 0.85;
+}
+
+/* Lightbox Styling */
 .lightbox {
   position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.9);
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
   z-index: 10000;
-  display: none;
-  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  padding: 20px;
   opacity: 0;
-  transition: opacity 0.3s;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  user-select: none;
 }
 .lightbox.active {
-  display: flex;
   opacity: 1;
+  pointer-events: auto;
 }
-.lightbox img {
+.lb-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 14, 20, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 1;
+}
+.lb-topbar {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  color: #fff;
+}
+.lb-counter {
+  font-size: 0.82rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 5px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.5px;
+}
+.lb-spot-badge {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.lb-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.lb-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.lb-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+.lb-close-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+/* Lightbox Stage */
+.lb-stage {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  overflow: hidden;
+}
+.lb-nav {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  z-index: 20;
+}
+.lb-nav:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+.lb-nav:active {
+  transform: scale(0.95);
+}
+.lb-img-wrap {
+  position: relative;
+  max-width: 88vw;
+  max-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lb-img-wrap img {
   max-width: 100%;
-  max-height: 90vh;
+  max-height: 70vh;
+  object-fit: contain;
   border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-  transform: scale(0.9);
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 16px 50px rgba(0,0,0,0.6);
+  transition: opacity 0.22s ease, transform 0.22s ease;
 }
-.lightbox.active img {
-  transform: scale(1);
+.lb-img-wrap img.fading {
+  opacity: 0.25;
+  transform: scale(0.98);
+}
+.lb-spinner {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  border: 3px solid rgba(255,255,255,0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: none;
+}
+.lb-spinner.show {
+  display: block;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Lightbox Bottombar */
+.lb-bottombar {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 16px 22px;
+}
+.lb-info-box {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  padding: 10px 20px;
+  text-align: center;
+  max-width: 580px;
+  width: 90%;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+.lb-title {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.lb-meta {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.76rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.lb-sep {
+  opacity: 0.5;
+}
+.lb-keyboard-hint {
+  margin-top: 8px;
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.album-load-more-wrap {
+  text-align: center;
+  margin-top: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.album-more-btn {
+  background: linear-gradient(135deg, var(--accent), #1a5170);
+  color: #fff;
+  border: none;
+  padding: 11px 26px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(42, 111, 151, 0.35);
+  transition: all 0.25s var(--ease);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.album-more-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(42, 111, 151, 0.45);
+}
+.album-show-all-btn {
+  background: none;
+  border: none;
+  color: var(--text-soft);
+  font-size: 0.74rem;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 4px;
+}
+.album-show-all-btn:hover {
+  color: var(--accent);
 }
 .sleek-tooltip {
   background: rgba(255, 255, 255, 0.95);
@@ -471,8 +877,44 @@ footer .heart{color:#e07a5f}
 [data-theme="dark"] .alert { background: #382810; color: #f0a830; border-color: #f0a830; }
 [data-theme="dark"] .order-tip { background: #132a40; color: #5b9bd5; border-color: #5b9bd5; }
 [data-theme="dark"] .bonus-card { background: linear-gradient(135deg, #102416, #162a1a); border-color: #388e3c; color: #a5d6a7; }
-[data-theme="dark"] .photo-item { background: #222; }
-[data-theme="dark"] .photo-caption { color: #ccc; }
+[data-theme="dark"] .photo-card {
+  background: #1c1d22;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+}
+[data-theme="dark"] .photo-thumb-wrap {
+  background: #141518;
+}
+[data-theme="dark"] .photo-spot-chip {
+  background: rgba(30, 32, 38, 0.88);
+  color: #eee;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+[data-theme="dark"] .photo-title {
+  color: #f0f0f0;
+}
+[data-theme="dark"] .photo-meta-row {
+  color: #8f95a0;
+}
+[data-theme="dark"] .album-pill {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #bbb;
+}
+[data-theme="dark"] .album-pill:hover {
+  border-color: var(--accent);
+  color: #fff;
+}
+[data-theme="dark"] .album-pill.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+[data-theme="dark"] .album-badge-chip {
+  background: rgba(42, 111, 151, 0.25);
+  color: #82c8ee;
+  border-color: rgba(42, 111, 151, 0.4);
+}
 [data-theme="dark"] .map-panel { background: rgba(30, 30, 30, 0.95); color: #eee; }
 [data-theme="dark"] .activity-item { border-color: #444; }
 [data-theme="dark"] .act-name { color: #ccc; }
@@ -1126,31 +1568,113 @@ footer .heart{color:#e07a5f}
 </section>
 
 <!-- ═══ ALBUM PHOTO ═══ -->
-<section class="info-section" id="album" class="info-section reveal" style="padding-top:10px;">
+<section class="info-section reveal" id="album" style="padding-top:14px;">
   <div class="container">
-    <div style="text-align:center; margin-bottom: 24px;">
-      <h2 style="font-size:1.6rem; font-weight:800; color:var(--accent); margin-bottom:6px;">📸 L'Album Souvenirs</h2>
-      <p style="font-size:.85rem; color:var(--text-soft); max-width:400px; margin:0 auto;">Toutes les photos ajoutées au Drive s'affichent ici.</p>
-    </div>
-    
-    <!-- Grille Maçonnerie -->
-    <div id="photo-grid" class="masonry-grid">
-      <div style="text-align:center; padding:40px; color:#888; grid-column: 1 / -1;">
-        ⏳ Chargement de l'album...
+    <div class="album-header-wrap">
+      <div class="album-badge-chip">📸 Galerie Voyage · 9—16 Octobre 2026</div>
+      <h2 class="album-title">L'Album Souvenirs</h2>
+      <p class="album-subtitle">Explorez les 314 clichés & vidéos de notre périple à Madère. Cliquez sur une photo pour ouvrir la galerie interactive plein écran avec défilement.</p>
+      
+      <!-- Filtres par catégorie -->
+      <div class="album-filters" id="album-filters">
+        <button class="album-pill active" data-cat="all" onclick="filterAlbum('all')">
+          🌟 Tout voir <span class="badge-count" id="count-all">0</span>
+        </button>
+        <button class="album-pill" data-cat="sommets" onclick="filterAlbum('sommets')">
+          ⛰️ Sommets & PR1 <span class="badge-count" id="count-sommets">0</span>
+        </button>
+        <button class="album-pill" data-cat="cotes" onclick="filterAlbum('cotes')">
+          🌊 Côtes & Falaises <span class="badge-count" id="count-cotes">0</span>
+        </button>
+        <button class="album-pill" data-cat="piscines" onclick="filterAlbum('piscines')">
+          🏊 Piscines & Lave <span class="badge-count" id="count-piscines">0</span>
+        </button>
+        <button class="album-pill" data-cat="nature" onclick="filterAlbum('nature')">
+          🌿 Levadas & Forêts <span class="badge-count" id="count-nature">0</span>
+        </button>
+        <button class="album-pill" data-cat="villages" onclick="filterAlbum('villages')">
+          🏡 Villages & Culture <span class="badge-count" id="count-villages">0</span>
+        </button>
+        <button class="album-pill" data-cat="video" onclick="filterAlbum('video')">
+          🎥 Vidéos <span class="badge-count" id="count-video">0</span>
+        </button>
+      </div>
+
+      <!-- Contrôles et compteurs -->
+      <div class="album-controls-bar">
+        <div id="album-status-text">Chargement des photos...</div>
+        <button class="album-sort-btn" onclick="toggleAlbumSort()" id="album-sort-btn" title="Changer l'ordre d'affichage">
+          ⏱️ Tri chronologique (Jour 1 ➔ 7)
+        </button>
       </div>
     </div>
     
-    <div style="text-align:center; margin-top:24px;">
-      <a href="https://drive.google.com/drive/folders/1bKSJeVb_qGwkJbjIZeUmXumGtC3GHij_?usp=drive_link" target="_blank" style="display:inline-flex; align-items:center; gap:8px; background:var(--accent); color:#fff; padding:10px 20px; border-radius:999px; text-decoration:none; font-size:.8rem; font-weight:700; box-shadow:0 4px 15px rgba(42, 111, 151, 0.3); transition:transform 0.2s;">
-        <span>☁️</span> Ajouter des photos via Drive
+    <!-- Grille de Photos -->
+    <div id="photo-grid" class="album-grid">
+      <div style="text-align:center; padding:50px 20px; color:var(--text-soft); grid-column: 1 / -1;">
+        <div style="font-size:2rem; margin-bottom:10px; animation:float 2s ease-in-out infinite;">⏳</div>
+        <div>Récupération des 314 photos et vidéos depuis Google Drive...</div>
+      </div>
+    </div>
+
+    <!-- Pagination / Voir plus -->
+    <div id="album-pagination" class="album-load-more-wrap" style="display:none;">
+      <button class="album-more-btn" onclick="loadMorePhotos()" id="album-more-btn">
+        ✨ Afficher plus de photos (<span id="more-count">36</span> restantes)
+      </button>
+      <button class="album-show-all-btn" onclick="showAllPhotos()">Tout afficher d'un coup</button>
+    </div>
+    
+    <div style="text-align:center; margin-top:30px;">
+      <a href="https://drive.google.com/drive/folders/1bKSJeVb_qGwkJbjIZeUmXumGtC3GHij_?usp=drive_link" target="_blank" style="display:inline-flex; align-items:center; gap:8px; background:var(--card); border:1px solid rgba(0,0,0,0.1); color:var(--accent); padding:10px 22px; border-radius:999px; text-decoration:none; font-size:.8rem; font-weight:700; box-shadow:var(--shadow); transition:all 0.25s var(--ease);">
+        <span>☁️</span> Ouvrir le dossier Google Drive original
       </a>
     </div>
   </div>
 </section>
 
-<!-- Lightbox pour voir les photos en grand -->
-<div id="lightbox" class="lightbox" onclick="closeLightbox()">
-  <img id="lightbox-img" src="" alt="Zoom">
+<!-- Lightbox Carousel interactif -->
+<div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Aperçu photo plein écran">
+  <div class="lb-backdrop" onclick="closeLightbox()"></div>
+  
+  <!-- Top Bar -->
+  <div class="lb-topbar">
+    <div class="lb-counter" id="lb-counter">1 / 314</div>
+    <div class="lb-spot-badge" id="lb-spot-badge">⛰️ Pico Ruivo</div>
+    <div class="lb-actions">
+      <a id="lb-drive-link" href="#" target="_blank" class="lb-btn" title="Ouvrir sur Google Drive">
+        <span>↗</span> Drive
+      </a>
+      <button class="lb-btn lb-close-btn" onclick="closeLightbox()" title="Fermer (Échap)">✕</button>
+    </div>
+  </div>
+
+  <!-- Main Image Stage -->
+  <div class="lb-stage">
+    <button class="lb-nav lb-prev" onclick="prevLightbox(event)" title="Photo précédente (Flèche gauche)" aria-label="Photo précédente">❮</button>
+    
+    <div class="lb-img-wrap" id="lb-img-wrap">
+      <img id="lightbox-img" src="" alt="Photo de voyage">
+      <div id="lb-spinner" class="lb-spinner"></div>
+    </div>
+    
+    <button class="lb-nav lb-next" onclick="nextLightbox(event)" title="Photo suivante (Flèche droite)" aria-label="Photo suivante">❯</button>
+  </div>
+
+  <!-- Bottom Caption & Info -->
+  <div class="lb-bottombar">
+    <div class="lb-info-box">
+      <div class="lb-title" id="lb-title">Titre de la photo</div>
+      <div class="lb-meta">
+        <span id="lb-location">📍 Pico Ruivo</span>
+        <span class="lb-sep">•</span>
+        <span id="lb-date">📅 11 Octobre 2026</span>
+      </div>
+    </div>
+    <div class="lb-keyboard-hint">
+      <span>Utilisez ◀ Flèche gauche / droite ▶ pour défiler · Glissez sur mobile · Échap pour fermer</span>
+    </div>
+  </div>
 </div>
 
 <!-- ═══ NOTES & COMMENTAIRES ═══ -->
@@ -1483,47 +2007,639 @@ function go(id) {
   window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - off, behavior: 'smooth' });
 }
 
-// ═══ ALBUM ═══
+// ═══ ALBUM & SMART PHOTO NAMING ═══
+const SPOTS_DB = [
+  {
+    id: 'ruivo',
+    name: 'Pico Ruivo',
+    subtitle: 'Toit de Madère (1862m) · Au-dessus des nuages',
+    icon: '⛰️',
+    cat: 'sommets',
+    lat: 32.7589, lng: -16.9436, radius: 2.6,
+    titles: [
+      'Au-dessus de la mer de nuages',
+      'Sur les crêtes du toit de Madère (1862m)',
+      'Sentier suspendu entre ciel et terre',
+      'Lumière dorée sur les cimes volcaniques',
+      'Panorama vertigineux sur les sommets',
+      'Perspective majestueuse sur le massif central',
+      'Le refuge de montagne et l\'ascension finale',
+      'Reliefs volcaniques baignés de brume',
+      'L\'océan de nuages à perte de vue',
+      'Contemplation au sommet de l\'île'
+    ]
+  },
+  {
+    id: 'arieiro',
+    name: 'Pico do Arieiro',
+    subtitle: 'Sentier PR1 des Crêtes & Nuages',
+    icon: '🥾',
+    cat: 'sommets',
+    lat: 32.7355, lng: -16.9288, radius: 2.2,
+    titles: [
+      'Le sentier mythique des crêtes PR1',
+      'Passage aérien au cœur des nuages',
+      'Escalier vers les cieux',
+      'Aiguilles rocheuses et abîmes sauvages'
+    ]
+  },
+  {
+    id: 'saolourenco',
+    name: 'Ponta de São Lourenço',
+    subtitle: 'Falaises volcaniques de l\'Est',
+    icon: '🌊',
+    cat: 'cotes',
+    lat: 32.7431, lng: -16.7011, radius: 4.5,
+    titles: [
+      'Falaises ocres & reflets atlantiques',
+      'Sentier escarpé du bout du monde',
+      'La péninsule sauvage battue par la houle',
+      'Contrastes minéraux et bleus profonds',
+      'Panorama grandiose sur la pointe Est',
+      'L\'isthme volcanique face au grand large'
+    ]
+  },
+  {
+    id: 'portomoniz',
+    name: 'Porto Moniz',
+    subtitle: 'Piscines naturelles de lave volcanique',
+    icon: '🏊',
+    cat: 'piscines',
+    lat: 32.8677, lng: -17.1675, radius: 2.0,
+    titles: [
+      'Piscines naturelles sculptées par la lave',
+      'L\'océan qui vient embrasser le basalte',
+      'Bain vivifiant dans l\'Atlantique',
+      'Eau cristalline et reflets turquoise',
+      'La puissance des vagues contre les roches'
+    ]
+  },
+  {
+    id: 'seixal',
+    name: 'Seixal',
+    subtitle: 'Plage de sable noir & Cascades côtières',
+    icon: '🌴',
+    cat: 'cotes',
+    lat: 32.8240, lng: -17.1060, radius: 2.2,
+    titles: [
+      'Plage de sable noir & falaises émeraude',
+      'Cascade naturelle se jetant dans l\'océan',
+      'Ambiance hawaïenne sur la côte Nord',
+      'Reflets doux sur le sable volcanique'
+    ]
+  },
+  {
+    id: 'fontes',
+    name: 'Levada des 25 Fontes',
+    subtitle: 'Rabaçal · Cascades & Forêt Primaire',
+    icon: '💧',
+    cat: 'nature',
+    lat: 32.7640, lng: -17.1260, radius: 2.8,
+    titles: [
+      'Immersion dans la forêt luxuriante de Laurisilva',
+      'Le chant de l\'eau le long de la levada',
+      'Murs de fougères et végétation tropicale',
+      'Le cirque féerique des 25 cascades',
+      'Fraîcheur vivifiante au cœur du Rabaçal'
+    ]
+  },
+  {
+    id: 'balcoes',
+    name: 'Ribeiro Frio & Balcões',
+    subtitle: 'Levada & Forêt de Laurisilva',
+    icon: '🌿',
+    cat: 'nature',
+    lat: 32.7825, lng: -16.9180, radius: 2.2,
+    titles: [
+      'Le belvédère vertigineux des Balcões',
+      'Immersion dans la canopée de Madère',
+      'Sentier bordé d\'arbres millénaires',
+      'Vue plongeante sur la vallée verdoyante'
+    ]
+  },
+  {
+    id: 'janela',
+    name: 'Ribeira da Janela',
+    subtitle: 'Ilhéus rocheux & Galets noirs',
+    icon: '🪨',
+    cat: 'cotes',
+    lat: 32.8480, lng: -17.1530, radius: 2.0,
+    titles: [
+      'Les spectaculaires aiguilles rocheuses de l\'Atlantique',
+      'Plage de galets volcaniques et houle sauvage',
+      'Fenêtre ouverte sur l\'océan infini'
+    ]
+  },
+  {
+    id: 'fachomachico',
+    name: 'Pico do Facho',
+    subtitle: 'Miradouro sur la baie de Machico',
+    icon: '🌅',
+    cat: 'cotes',
+    lat: 32.7280, lng: -16.7610, radius: 2.0,
+    titles: [
+      'Panorama spectaculaire sur la baie de Machico',
+      'Les collines dorées et l\'immensité de l\'Est',
+      'Point de vue historique des guetteurs'
+    ]
+  },
+  {
+    id: 'machico',
+    name: 'Machico',
+    subtitle: 'Plage & Ambiance locale',
+    icon: '🏖️',
+    cat: 'villages',
+    lat: 32.7180, lng: -16.7667, radius: 1.8,
+    titles: [
+      'Douceur de vivre dans la baie de Machico',
+      'Plage de sable blond et palmiers',
+      'Pause gourmande et ruelles pittoresques'
+    ]
+  },
+  {
+    id: 'curral',
+    name: 'Curral das Freiras',
+    subtitle: 'Vallée des Nonnes & Cirque volcanique',
+    icon: '🏔️',
+    cat: 'sommets',
+    lat: 32.7410, lng: -16.8900, radius: 2.0,
+    titles: [
+      'Le cirque impressionnant de la Vallée des Nonnes',
+      'Village niché au creux des falaises colossales',
+      'Belvédère vertigineux d\'Eira do Serrado'
+    ]
+  },
+  {
+    id: 'santana',
+    name: 'Santana',
+    subtitle: 'Chaumières traditionnelles de Madère',
+    icon: '🏡',
+    cat: 'villages',
+    lat: 32.8050, lng: -16.8820, radius: 2.5,
+    titles: [
+      'Les emblématiques maisonnettes triangulaires aux toits de chaume',
+      'Couleurs vives et fleurs typiques de Santana',
+      'Voyage au cœur des traditions de l\'île'
+    ]
+  },
+  {
+    id: 'pontadelgada',
+    name: 'Ponta Delgada & São Jorge',
+    subtitle: 'Côte Nord sauvage & Falaises',
+    icon: '🌊',
+    cat: 'cotes',
+    lat: 32.8150, lng: -16.9630, radius: 3.5,
+    titles: [
+      'La côte Nord sauvage et ses falaises escarpées',
+      'Atmosphère paisible au bord de l\'Atlantique'
+    ]
+  },
+  {
+    id: 'cabogirao',
+    name: 'Cabo Girão',
+    subtitle: 'À pic sur l\'océan (580m)',
+    icon: '🦅',
+    cat: 'cotes',
+    lat: 32.7132, lng: -16.9637, radius: 3.0,
+    titles: [
+      'La deuxième plus haute falaise maritime d\'Europe',
+      'Vue plongeante à 580 mètres sur les vagues'
+    ]
+  },
+  {
+    id: 'guindaste',
+    name: 'Faial & Guindaste',
+    subtitle: 'Miradouro sur l\'océan déchaîné',
+    icon: '🌊',
+    cat: 'cotes',
+    lat: 32.7729, lng: -16.8733, radius: 2.0,
+    titles: [
+      'Passerelle transparente face à l\'immensité océanique',
+      'Les falaises rouges du Nord plongent dans la mer'
+    ]
+  },
+  {
+    id: 'funchal',
+    name: 'Funchal & Monte',
+    subtitle: 'Capitale, Marché & Jardin Botanique',
+    icon: '🌺',
+    cat: 'villages',
+    lat: 32.6500, lng: -16.9100, radius: 4.5,
+    titles: [
+      'Ruelles pavées et façades fleuries de Funchal',
+      'Marché des travailleurs et étals exotiques',
+      'La baie de Funchal illuminée'
+    ]
+  }
+];
+
+let allAlbumPhotos = [];
+let filteredAlbumPhotos = [];
+let currentAlbumFilter = 'all';
+let currentAlbumSort = 'chrono';
+let visibleAlbumCount = 36;
+let currentLightboxIndex = 0;
+let touchStartX = 0;
+let touchStartY = 0;
+
+function haversineDist(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+  return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function parsePhotoDate(f) {
+  const t = f.imageMediaMetadata && f.imageMediaMetadata.time;
+  if (t) {
+    const parts = t.split(' ');
+    if (parts.length === 2) {
+      const dParts = parts[0].split(':');
+      const tParts = parts[1].split(':');
+      if (dParts.length === 3 && tParts.length === 3) {
+        return new Date(dParts[0], dParts[1] - 1, dParts[2], tParts[0], tParts[1], tParts[2]);
+      }
+    }
+  }
+  if (f.createdTime) {
+    return new Date(f.createdTime);
+  }
+  return new Date('2026-10-10T12:00:00');
+}
+
+function formatFrenchDate(d) {
+  const months = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sept','Oct','Nov','Déc'];
+  const day = d.getDate();
+  const m = months[d.getMonth()];
+  const h = d.getHours().toString().padStart(2, '0');
+  const min = d.getMinutes().toString().padStart(2, '0');
+  return `${day} ${m} · ${h}h${min}`;
+}
+
+function formatLongDate(d) {
+  const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  const dayName = days[d.getDay()];
+  const day = d.getDate();
+  const m = months[d.getMonth()];
+  const y = d.getFullYear();
+  const h = d.getHours().toString().padStart(2, '0');
+  const min = d.getMinutes().toString().padStart(2, '0');
+  return `${dayName} ${day} ${m} ${y} à ${h}h${min}`;
+}
+
 async function loadAlbum() {
   const grid = document.getElementById('photo-grid');
   if(!grid) return;
   const apiKey = "AIzaSyCIzKf4AQ0SK5ti0rDcpyUr1fSgVE-PurY";
   const folderId = "1bKSJeVb_qGwkJbjIZeUmXumGtC3GHij_";
-  const url = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents&fields=files(id,name,mimeType,thumbnailLink)&key=${apiKey}`;
+  const url = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents&pageSize=1000&fields=files(id,name,mimeType,thumbnailLink,createdTime,imageMediaMetadata)&key=${apiKey}`;
   
   try {
     const res = await fetch(url);
     const data = await res.json();
     if(data.error) throw new Error(data.error.message);
     
-    const files = data.files.filter(f => f.mimeType.startsWith('image/'));
-    if(files.length === 0) {
-      grid.innerHTML = '<div style="text-align:center; padding:40px; color:#888; grid-column: 1 / -1;">Aucune photo trouvée dans le dossier.</div>';
+    const rawFiles = (data.files || []).filter(f => f.thumbnailLink);
+    if(rawFiles.length === 0) {
+      grid.innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-soft); grid-column: 1 / -1;">Aucune photo trouvée dans le dossier.</div>';
       return;
     }
-    
-    grid.innerHTML = files.map((f, i) => {
-      // Use higher res thumbnail (w800 is good for a masonry grid, or s800)
-      const hqThumb = f.thumbnailLink.replace('=s220', '=s800');
-      const span = Math.floor(Math.random() * 10) + 18; // slightly taller to account for polaroid border
-      const rot = (Math.random() * 4 - 2).toFixed(1); // random rotation between -2 and 2 deg
-      const caption = f.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, ' '); // remove extension and dashes
-      return `<div class="photo-item" style="grid-row: span ${span}; transform: rotate(${rot}deg);" onclick="openLightbox('${hqThumb.replace('=s800', '=s1600')}')">
-        <img src="${hqThumb}" alt="${f.name}" loading="lazy">
-        <div class="photo-caption">${caption}</div>
-      </div>`;
-    }).join('');
+
+    // Process all photos & videos with GPS and Date parsing
+    const items = rawFiles.map(f => {
+      const dt = parsePhotoDate(f);
+      const loc = f.imageMediaMetadata && f.imageMediaMetadata.location;
+      const isVideo = f.mimeType && f.mimeType.startsWith('video/');
+      const thumb = f.thumbnailLink || '';
+      return {
+        file: f,
+        dt: dt,
+        loc: loc,
+        isVideo: isVideo,
+        thumbUrl: thumb.replace(/=s\d+/, '=s640'),
+        hqUrl: thumb.replace(/=s\d+/, '=s1800'),
+        spot: null,
+        title: '',
+        dateFormatted: formatFrenchDate(dt),
+        dateLong: formatLongDate(dt)
+      };
+    });
+
+    // Sort chronologically as default
+    items.sort((a, b) => a.dt - b.dt);
+
+    // 1. Direct GPS spot match
+    items.forEach(it => {
+      if (it.loc && it.loc.latitude && it.loc.longitude) {
+        let bestSpot = null;
+        let bestDist = 9999;
+        SPOTS_DB.forEach(s => {
+          const d = haversineDist(it.loc.latitude, it.loc.longitude, s.lat, s.lng);
+          if (d <= s.radius && d < bestDist) {
+            bestDist = d;
+            bestSpot = s;
+          }
+        });
+        if (bestSpot) it.spot = bestSpot;
+      }
+    });
+
+    // 2. Proximity interpolation for non-GPS items
+    items.forEach(it => {
+      if (!it.spot) {
+        let closestSpot = null;
+        let minDiff = 7200000; // 2 hours
+        items.forEach(other => {
+          if (other.spot) {
+            const diff = Math.abs(other.dt - it.dt);
+            if (diff < minDiff) {
+              minDiff = diff;
+              closestSpot = other.spot;
+            }
+          }
+        });
+        if (closestSpot) {
+          it.spot = closestSpot;
+        } else {
+          // Fallback based on day of month in October
+          const day = it.dt.getDate();
+          if (day <= 10) it.spot = SPOTS_DB.find(s => s.id === 'saolourenco') || SPOTS_DB[0];
+          else if (day === 11) it.spot = SPOTS_DB.find(s => s.id === 'ruivo') || SPOTS_DB[0];
+          else if (day === 12 || day === 13) it.spot = SPOTS_DB.find(s => s.id === 'balcoes') || SPOTS_DB[0];
+          else if (day === 14) it.spot = SPOTS_DB.find(s => s.id === 'portomoniz') || SPOTS_DB[0];
+          else it.spot = SPOTS_DB.find(s => s.id === 'funchal') || SPOTS_DB[0];
+        }
+      }
+    });
+
+    // 3. Generate Intelligent Meaningful Titles
+    const spotCounters = {};
+    items.forEach(it => {
+      const s = it.spot;
+      const c = (spotCounters[s.id] || 0);
+      spotCounters[s.id] = c + 1;
+      const titles = s.titles || ['Moment magique à Madère'];
+      let baseTitle = titles[c % titles.length];
+      if (it.isVideo) {
+        baseTitle = `🎥 Séquence · ${baseTitle}`;
+      }
+      it.title = baseTitle;
+    });
+
+    allAlbumPhotos = items;
+
+    // Update filter counts
+    updateAlbumFilterCounts();
+
+    // Apply current filter & render
+    applyAlbumFilterAndRender();
+
+    // Setup global listeners (keyboard & touch swipe)
+    initLightboxInteractions();
+
   } catch (err) {
     console.error(err);
-    grid.innerHTML = `<div style="text-align:center; padding:40px; color:#d9534f; grid-column: 1 / -1;">Impossible de charger les photos. Assurez-vous que l'API Drive est bien activée et que le dossier est public.</div>`;
+    grid.innerHTML = `<div style="text-align:center; padding:40px; color:#d9534f; grid-column: 1 / -1;">Impossible de charger les photos. Vérifiez la connexion à l'API Google Drive.</div>`;
   }
 }
-function openLightbox(url) {
-  document.getElementById('lightbox-img').src = url;
-  document.getElementById('lightbox').classList.add('active');
+
+function updateAlbumFilterCounts() {
+  const counts = { all: allAlbumPhotos.length, sommets: 0, cotes: 0, piscines: 0, nature: 0, villages: 0, video: 0 };
+  allAlbumPhotos.forEach(p => {
+    if (p.isVideo) counts.video++;
+    const cat = p.spot.cat;
+    if (counts[cat] !== undefined) counts[cat]++;
+  });
+
+  for (const [k, v] of Object.entries(counts)) {
+    const el = document.getElementById('count-' + k);
+    if (el) el.textContent = v;
+  }
 }
+
+function filterAlbum(cat) {
+  currentAlbumFilter = cat;
+  visibleAlbumCount = 36;
+  
+  document.querySelectorAll('.album-pill').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.cat === cat);
+  });
+
+  applyAlbumFilterAndRender();
+}
+
+function toggleAlbumSort() {
+  currentAlbumSort = currentAlbumSort === 'chrono' ? 'spot' : 'chrono';
+  const btn = document.getElementById('album-sort-btn');
+  if (btn) {
+    btn.textContent = currentAlbumSort === 'chrono' 
+      ? '⏱️ Tri chronologique (Jour 1 ➔ 7)'
+      : '📍 Regroupé par Lieux';
+  }
+  applyAlbumFilterAndRender();
+}
+
+function applyAlbumFilterAndRender() {
+  const grid = document.getElementById('photo-grid');
+  if (!grid) return;
+
+  // Filter
+  let list = allAlbumPhotos.slice();
+  if (currentAlbumFilter === 'video') {
+    list = list.filter(p => p.isVideo);
+  } else if (currentAlbumFilter !== 'all') {
+    list = list.filter(p => p.spot.cat === currentAlbumFilter);
+  }
+
+  // Sort
+  if (currentAlbumSort === 'chrono') {
+    list.sort((a, b) => a.dt - b.dt);
+  } else {
+    list.sort((a, b) => a.spot.name.localeCompare(b.spot.name) || a.dt - b.dt);
+  }
+
+  filteredAlbumPhotos = list;
+
+  // Update status bar
+  const statusEl = document.getElementById('album-status-text');
+  if (statusEl) {
+    const shown = Math.min(visibleAlbumCount, list.length);
+    statusEl.innerHTML = `Affichage de <strong>${shown}</strong> sur <strong>${list.length}</strong> souvenirs`;
+  }
+
+  if (list.length === 0) {
+    grid.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text-soft); grid-column:1/-1;">Aucune photo dans cette catégorie.</div>';
+    document.getElementById('album-pagination').style.display = 'none';
+    return;
+  }
+
+  // Render visible cards
+  const toRender = list.slice(0, visibleAlbumCount);
+  grid.innerHTML = toRender.map((p, idx) => {
+    const videoBadge = p.isVideo ? '<div class="photo-video-chip">▶ Vidéo</div>' : '';
+    return `
+      <div class="photo-card" onclick="openLightbox(${idx})">
+        <div class="photo-thumb-wrap">
+          <span class="photo-spot-chip">${p.spot.icon} ${p.spot.name}</span>
+          ${videoBadge}
+          <img src="${p.thumbUrl}" alt="${p.title}" loading="lazy">
+        </div>
+        <div class="photo-info">
+          <div class="photo-title">${p.title}</div>
+          <div class="photo-meta-row">
+            <span class="photo-spot-text">${p.spot.name}</span>
+            <span class="photo-date">${p.dateFormatted}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Pagination button
+  const pag = document.getElementById('album-pagination');
+  const moreCountEl = document.getElementById('more-count');
+  if (visibleAlbumCount < list.length) {
+    pag.style.display = 'flex';
+    const remaining = list.length - visibleAlbumCount;
+    if (moreCountEl) moreCountEl.textContent = Math.min(36, remaining);
+  } else {
+    pag.style.display = 'none';
+  }
+}
+
+function loadMorePhotos() {
+  visibleAlbumCount += 36;
+  applyAlbumFilterAndRender();
+}
+
+function showAllPhotos() {
+  visibleAlbumCount = filteredAlbumPhotos.length;
+  applyAlbumFilterAndRender();
+}
+
+// ═══ INTERACTIVE LIGHTBOX CAROUSEL ═══
+function openLightbox(index) {
+  if (!filteredAlbumPhotos || filteredAlbumPhotos.length === 0) return;
+  currentLightboxIndex = index;
+  updateLightboxContent();
+  const lb = document.getElementById('lightbox');
+  lb.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function updateLightboxContent() {
+  if (currentLightboxIndex < 0) currentLightboxIndex = filteredAlbumPhotos.length - 1;
+  if (currentLightboxIndex >= filteredAlbumPhotos.length) currentLightboxIndex = 0;
+
+  const p = filteredAlbumPhotos[currentLightboxIndex];
+  if (!p) return;
+
+  const counterEl = document.getElementById('lb-counter');
+  const badgeEl = document.getElementById('lb-spot-badge');
+  const titleEl = document.getElementById('lb-title');
+  const locEl = document.getElementById('lb-location');
+  const dateEl = document.getElementById('lb-date');
+  const driveLink = document.getElementById('lb-drive-link');
+  const img = document.getElementById('lightbox-img');
+  const spinner = document.getElementById('lb-spinner');
+
+  if (counterEl) counterEl.textContent = `${currentLightboxIndex + 1} / ${filteredAlbumPhotos.length}`;
+  if (badgeEl) badgeEl.textContent = `${p.spot.icon} ${p.spot.name}`;
+  if (titleEl) titleEl.textContent = p.title;
+  if (locEl) locEl.textContent = `📍 ${p.spot.subtitle || p.spot.name}`;
+  if (dateEl) dateEl.textContent = `📅 ${p.dateLong}`;
+  if (driveLink) driveLink.href = `https://drive.google.com/file/d/${p.file.id}/view`;
+
+  // Preload and transition image
+  if (img) {
+    img.classList.add('fading');
+    if (spinner) spinner.classList.add('show');
+
+    const highRes = new Image();
+    highRes.src = p.hqUrl;
+    highRes.onload = () => {
+      img.src = p.hqUrl;
+      img.classList.remove('fading');
+      if (spinner) spinner.classList.remove('show');
+    };
+    highRes.onerror = () => {
+      img.src = p.thumbUrl;
+      img.classList.remove('fading');
+      if (spinner) spinner.classList.remove('show');
+    };
+  }
+
+  // Preload adjacent images
+  if (filteredAlbumPhotos.length > 1) {
+    const nextIdx = (currentLightboxIndex + 1) % filteredAlbumPhotos.length;
+    const prevIdx = (currentLightboxIndex - 1 + filteredAlbumPhotos.length) % filteredAlbumPhotos.length;
+    new Image().src = filteredAlbumPhotos[nextIdx].hqUrl;
+    new Image().src = filteredAlbumPhotos[prevIdx].hqUrl;
+  }
+}
+
+function nextLightbox(e) {
+  if (e) e.stopPropagation();
+  if (filteredAlbumPhotos.length <= 1) return;
+  currentLightboxIndex = (currentLightboxIndex + 1) % filteredAlbumPhotos.length;
+  updateLightboxContent();
+}
+
+function prevLightbox(e) {
+  if (e) e.stopPropagation();
+  if (filteredAlbumPhotos.length <= 1) return;
+  currentLightboxIndex = (currentLightboxIndex - 1 + filteredAlbumPhotos.length) % filteredAlbumPhotos.length;
+  updateLightboxContent();
+}
+
 function closeLightbox() {
-  document.getElementById('lightbox').classList.remove('active');
+  const lb = document.getElementById('lightbox');
+  if (lb) lb.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function initLightboxInteractions() {
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    const lb = document.getElementById('lightbox');
+    if (!lb || !lb.classList.contains('active')) return;
+
+    if (e.key === 'ArrowRight') {
+      nextLightbox();
+    } else if (e.key === 'ArrowLeft') {
+      prevLightbox();
+    } else if (e.key === 'Escape') {
+      closeLightbox();
+    }
+  });
+
+  // Mobile Touch Swipe support
+  const lbStage = document.getElementById('lb-img-wrap');
+  if (lbStage) {
+    lbStage.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    lbStage.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      const touchEndY = e.changedTouches[0].screenY;
+      const diffX = touchEndX - touchStartX;
+      const diffY = touchEndY - touchStartY;
+
+      if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX < 0) {
+          nextLightbox(); // Swiped left -> next
+        } else {
+          prevLightbox(); // Swiped right -> prev
+        }
+      }
+    }, { passive: true });
+  }
 }
 
 // ═══ MAP INIT ═══
@@ -1802,7 +2918,7 @@ function initCustomCursor() {
   });
 
   document.body.addEventListener('mouseover', (e) => {
-    const clickable = e.target.closest('a, button, input, textarea, .pill, .photo-item, .act-check, .prep-check, .mapboxgl-marker');
+    const clickable = e.target.closest('a, button, input, textarea, .pill, .photo-item, .photo-card, .album-pill, .lb-btn, .lb-nav, .act-check, .prep-check, .mapboxgl-marker');
     if (clickable) {
       ring.classList.add('hover');
     } else {

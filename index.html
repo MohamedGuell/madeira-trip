@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Madeira — 9-16 Oct · Planning Voyage</title>
+<title>Madeira — 9-16 Oct · Carnet de Voyage & Souvenirs 🏝️</title>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
@@ -62,7 +62,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .pill{flex-shrink:0;padding:7px 13px;border-radius:999px;font-size:.72rem;font-weight:600;cursor:pointer;border:none;background:rgba(0,0,0,0.05);color:var(--text-soft);transition:all .2s var(--ease);white-space:nowrap}
 .pill:hover,.pill.active{color:#fff;transform:scale(1.05)}
 .pill:active{transform:scale(0.95)!important}
-.pill[data-s="lodging"]{--c:#c97b3a}.pill[data-s="budget"]{--c:#3a8558}.pill[data-s="east"]{--c:#b08968}.pill[data-s="north"]{--c:#52796f}.pill[data-s="funchal"]{--c:#7b6fa6}.pill[data-s="notes"]{--c:#6b8cae}.pill[data-s="prep"]{--c:#e07a5f}.pill[data-s="info"]{--c:#5b8c85}.pill[data-s="album"]{--c:#d4a373}
+.pill[data-s="lodging"]{--c:#c97b3a}.pill[data-s="budget"]{--c:#3a8558}.pill[data-s="east"]{--c:#b08968}.pill[data-s="north"]{--c:#52796f}.pill[data-s="funchal"]{--c:#7b6fa6}.pill[data-s="notes"]{--c:#6b8cae}.pill[data-s="prep"]{--c:#e07a5f}.pill[data-s="info"]{--c:#5b8c85}.pill[data-s="album"]{--c:#d4a373}.pill[data-s="map-section"]{--c:#2a6f97}
+.trip-recap-badges { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-top:14px; }
+.tr-badge { background:rgba(255,255,255,0.2); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.25); padding:6px 14px; border-radius:999px; color:#fff; font-size:0.78rem; font-weight:700; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
 .pill:hover,.pill.active{background:var(--c);box-shadow:0 3px 12px color-mix(in srgb,var(--c) 35%,transparent)}
 
 /* ── Section ── */
@@ -954,35 +956,37 @@ footer .heart{color:#e07a5f}
 <header class="hero">
   <h1>Madeira 🏝️</h1>
   <p>Vincent · Momo · Caro</p>
-  <div class="dates-badge">📅 9 → 16 Octobre 2026 · 3 voyageurs</div>
+  <div class="dates-badge">✨ Road trip accompli · 9 → 16 Octobre 2026 · 3 voyageurs</div>
   <br>
-  <div class="countdown-widget" id="countdown">
-    <div class="cd-box"><span id="cd-d">--</span><span>Jours</span></div>
-    <div class="cd-box"><span id="cd-h">--</span><span>Heures</span></div>
-    <div class="cd-box"><span id="cd-m">--</span><span>Min</span></div>
+  <div class="trip-recap-badges" id="countdown">
+    <div class="tr-badge"><span>📅</span> 7 Jours de Road-Trip</div>
+    <div class="tr-badge"><span>⛰️</span> Pico Ruivo (1862m)</div>
+    <div class="tr-badge"><span>📸</span> 307 Polaroids & Vidéos</div>
+    <div class="tr-badge"><span>🚗</span> Tour complet de l'île</div>
   </div>
   <br>
   <div class="weather-widget">
-    <div class="w-zone"><span>Nord</span><span class="w-icon">☁️ 19°C</span></div>
+    <div class="w-zone"><span>Période</span><span class="w-icon">🍂 9 → 16 Octobre</span></div>
     <div class="w-divider"></div>
-    <div class="w-zone"><span>Sud</span><span class="w-icon">☀️ 24°C</span></div>
+    <div class="w-zone"><span>Bilan</span><span class="w-icon">☀️ 100% Inoubliable</span></div>
   </div>
   <br>
-  <div class="sync-badge"><span class="sync-dot off" id="heroSync"></span> <span id="heroSyncText">Connexion…</span></div>
+  <div class="sync-badge"><span class="sync-dot on" id="heroSync"></span> <span id="heroSyncText">Carnet de voyage sauvegardé ✨</span></div>
 </header>
 
 <!-- ═══ NAV ═══ -->
 <nav class="nav" id="nav">
   <div class="container">
-    <button class="pill active" data-s="lodging" onclick="go('lodging')">🏠 Logements</button>
-    <button class="pill" data-s="budget" onclick="go('budget')">💰 Budget</button>
+    <button class="pill active" data-s="album" onclick="go('album')">📸 Album (307)</button>
+    <button class="pill" data-s="map-section" onclick="go('map-section')">🗺️ Carte 3D</button>
     <button class="pill" data-s="east" onclick="go('east')">🏔️ Est</button>
     <button class="pill" data-s="north" onclick="go('north')">🌿 Nord</button>
     <button class="pill" data-s="funchal" onclick="go('funchal')">🏘️ Funchal</button>
-    <button class="pill" data-s="prep" onclick="go('prep')">🧳 Prép.</button>
+    <button class="pill" data-s="lodging" onclick="go('lodging')">🏠 Logements</button>
+    <button class="pill" data-s="budget" onclick="go('budget')">💰 Bilan Budget</button>
+    <button class="pill" data-s="prep" onclick="go('prep')">🧳 Valises</button>
     <button class="pill" data-s="info" onclick="go('info')">ℹ️ Infos</button>
-    <button class="pill" data-s="album" onclick="go('album')">📸 Album</button>
-    <button class="pill" data-s="notes" onclick="go('notes')">💬 Notes</button>
+    <button class="pill" data-s="notes" onclick="go('notes')">💬 Souvenirs</button>
   </div>
 </nav>
 
@@ -1007,12 +1011,124 @@ footer .heart{color:#e07a5f}
   </div>
 </section>
 
+<!-- ═══ ALBUM PHOTO ═══ -->
+<section class="info-section reveal" id="album" style="padding-top:14px;">
+  <div class="container">
+    <div class="album-book-wrap">
+      <div class="album-header-wrap">
+        <div class="album-stamp">★ MADÈRE 2026 · CARNET DE VOYAGE ★</div>
+        <h2 class="album-title-handwritten">L'Album Photos</h2>
+        <p class="album-subtitle">Nos 307 polaroids & vidéos de voyage du 9 au 16 octobre 2026. Cliquez sur un polaroid pour l'agrandir et feuilleter l'album.</p>
+        
+        <!-- Onglets / Filtres de l'album -->
+        <div class="album-tabs-bar" id="album-filters">
+          <button class="album-tab active" data-cat="all" onclick="filterAlbum('all')">
+            📸 Tout l'album <span class="badge-count" id="count-all">0</span>
+          </button>
+          <button class="album-tab" data-cat="sommets" onclick="filterAlbum('sommets')">
+            ⛰️ Sommets PR1 <span class="badge-count" id="count-sommets">0</span>
+          </button>
+          <button class="album-tab" data-cat="cotes" onclick="filterAlbum('cotes')">
+            🌊 Côtes & Océan <span class="badge-count" id="count-cotes">0</span>
+          </button>
+          <button class="album-tab" data-cat="piscines" onclick="filterAlbum('piscines')">
+            🏊 Piscines Naturelles <span class="badge-count" id="count-piscines">0</span>
+          </button>
+          <button class="album-tab" data-cat="nature" onclick="filterAlbum('nature')">
+            🌿 Levadas & Forêts <span class="badge-count" id="count-nature">0</span>
+          </button>
+          <button class="album-tab" data-cat="villages" onclick="filterAlbum('villages')">
+            🏡 Villages <span class="badge-count" id="count-villages">0</span>
+          </button>
+          <button class="album-tab" data-cat="video" onclick="filterAlbum('video')">
+            🎥 Vidéos <span class="badge-count" id="count-video">0</span>
+          </button>
+        </div>
+
+        <!-- Contrôles et compteurs -->
+        <div class="album-controls-bar">
+          <div id="album-status-text">Chargement des photos...</div>
+          <button class="album-sort-btn" onclick="toggleAlbumSort()" id="album-sort-btn" title="Changer l'ordre d'affichage">
+            ⏱️ Du 9 au 16 Octobre
+          </button>
+        </div>
+      </div>
+      
+      <!-- Grille Polaroids -->
+      <div id="photo-grid" class="polaroid-grid">
+        <div style="text-align:center; padding:50px 20px; color:var(--text-soft); grid-column: 1 / -1;">
+          <div style="font-size:2rem; margin-bottom:10px; animation:float 2s ease-in-out infinite;">📷</div>
+          <div>Ouverture de l'album photo...</div>
+        </div>
+      </div>
+
+      <!-- Pagination / Voir plus -->
+      <div id="album-pagination" class="album-load-more-wrap" style="display:none;">
+        <button class="album-more-btn" onclick="loadMorePhotos()" id="album-more-btn">
+          ✨ Tourner la page (<span id="more-count">36</span> polaroids de plus)
+        </button>
+        <button class="album-show-all-btn" onclick="showAllPhotos()">Voir tous les 307 polaroids</button>
+      </div>
+      
+      <div style="text-align:center; margin-top:28px;">
+        <a href="https://drive.google.com/drive/folders/1bKSJeVb_qGwkJbjIZeUmXumGtC3GHij_?usp=drive_link" target="_blank" style="display:inline-flex; align-items:center; gap:8px; background:var(--card); border:1px solid rgba(0,0,0,0.1); color:var(--accent); padding:10px 22px; border-radius:999px; text-decoration:none; font-size:.8rem; font-weight:700; box-shadow:var(--shadow); transition:all 0.25s var(--ease);">
+          <span>📁</span> Ouvrir le dossier Google Drive original
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Lightbox Carousel interactif -->
+<div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Aperçu photo plein écran">
+  <div class="lb-backdrop" onclick="closeLightbox()"></div>
+  
+  <!-- Top Bar -->
+  <div class="lb-topbar">
+    <div class="lb-counter" id="lb-counter">1 / 307</div>
+    <div class="lb-spot-badge" id="lb-spot-badge">⛰️ Pico Ruivo</div>
+    <div class="lb-actions">
+      <a id="lb-drive-link" href="#" target="_blank" class="lb-btn" title="Ouvrir sur Google Drive">
+        <span>↗</span> Drive
+      </a>
+      <button class="lb-btn lb-close-btn" onclick="closeLightbox()" title="Fermer (Échap)">✕</button>
+    </div>
+  </div>
+
+  <!-- Main Image Stage -->
+  <div class="lb-stage">
+    <button class="lb-nav lb-prev" onclick="prevLightbox(event)" title="Photo précédente (Flèche gauche)" aria-label="Photo précédente">❮</button>
+    
+    <div class="lb-img-wrap" id="lb-img-wrap">
+      <img id="lightbox-img" src="" alt="Photo de voyage">
+      <div id="lb-spinner" class="lb-spinner"></div>
+    </div>
+    
+    <button class="lb-nav lb-next" onclick="nextLightbox(event)" title="Photo suivante (Flèche droite)" aria-label="Photo suivante">❯</button>
+  </div>
+
+  <!-- Bottom Caption & Info -->
+  <div class="lb-bottombar">
+    <div class="lb-info-box">
+      <div class="lb-title" id="lb-title">Pico Ruivo</div>
+      <div class="lb-meta">
+        <span id="lb-location">📍 Madère</span>
+        <span class="lb-sep">•</span>
+        <span id="lb-date">📅 11 Octobre 2026</span>
+      </div>
+    </div>
+    <div class="lb-keyboard-hint">
+      <span>Utilisez ◀ Flèche gauche / droite ▶ pour feuilleter · Glissez sur mobile · Échap pour fermer</span>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ LODGING ═══ -->
 <section class="lodging-section" id="lodging">
   <div class="container">
     <div class="lodging-card reveal">
-      <h2>🏠 Logements — Votez & Choisissez</h2>
-      <p class="sub">Votez Oui / Bof / Non. Cliquez les prix pour les modifier. Tout est synchronisé en temps réel ✨</p>
+      <h2>🏠 Nos Logements du Voyage</h2>
+      <p class="sub">Les 3 hébergements où nous avons séjourné durant notre road trip (Machico, São Vicente / Ponta Delgada & Funchal). ✨</p>
 
       <!-- ── Étape 1: 9→12 oct ── -->
       <div class="lodge-period">
@@ -1401,7 +1517,7 @@ footer .heart{color:#e07a5f}
 <!-- ═══ SECTION 1 — EST ═══ -->
 <section class="section section-east" id="east">
   <div class="container">
-    <div class="sec-title"><span class="dot" style="background:#b08968"></span> 9–12 Oct · Est sauvage & Sommets</div>
+    <div class="sec-title"><span class="dot" style="background:#b08968"></span> 9–12 Oct · Est sauvage & Sommets (Accompli ✅)</div>
     <div class="timeline">
 
       <div class="day-card reveal" id="day1">
@@ -1444,7 +1560,7 @@ footer .heart{color:#e07a5f}
 <!-- ═══ SECTION 2 — NORD ═══ -->
 <section class="section section-north" id="north">
   <div class="container">
-    <div class="sec-title"><span class="dot" style="background:#52796f"></span> 12–15 Oct · Nord vert & Sud ensoleillé</div>
+    <div class="sec-title"><span class="dot" style="background:#52796f"></span> 12–15 Oct · Nord vert & Côtes sauvages (Accompli ✅)</div>
     <div class="timeline">
 
       <div class="day-card reveal" id="day4">
@@ -1505,7 +1621,7 @@ footer .heart{color:#e07a5f}
 <!-- ═══ SECTION 3 — FUNCHAL ═══ -->
 <section class="section section-funchal" id="funchal">
   <div class="container">
-    <div class="sec-title"><span class="dot" style="background:#7b6fa6"></span> 16 Oct · Funchal à pied & Départ</div>
+    <div class="sec-title"><span class="dot" style="background:#7b6fa6"></span> 15–16 Oct · Funchal, Capitale & Départ (Accompli ✅)</div>
     <div class="timeline">
       <div class="day-card reveal" id="day8">
         <div class="day-badge">📅 Jour 8 · 16 Oct</div>
@@ -1567,7 +1683,7 @@ footer .heart{color:#e07a5f}
 <section class="info-section" id="info">
   <div class="container">
     <div class="info-card reveal">
-      <h2>ℹ️ Infos pratiques — Madère</h2>
+      <h2>ℹ️ Retours d'expérience & Infos Madère</h2>
       <div class="info-grid">
         <div class="info-item"><span class="ii-icon">🕐</span><span class="ii-label">Fuseau horaire</span><span class="ii-value">UTC+0 — 1h de moins que la France</span></div>
         <div class="info-item"><span class="ii-icon">💶</span><span class="ii-label">Monnaie</span><span class="ii-value">Euro (€) — pas de change</span></div>
@@ -1584,123 +1700,14 @@ footer .heart{color:#e07a5f}
   </div>
 </section>
 
-<!-- ═══ ALBUM PHOTO ═══ -->
-<section class="info-section reveal" id="album" style="padding-top:14px;">
-  <div class="container">
-    <div class="album-book-wrap">
-      <div class="album-header-wrap">
-        <div class="album-stamp">★ MADÈRE 2026 · CARNET DE VOYAGE ★</div>
-        <h2 class="album-title-handwritten">L'Album Photos</h2>
-        <p class="album-subtitle">Nos 307 polaroids & vidéos de voyage du 9 au 16 octobre 2026. Cliquez sur un polaroid pour l'agrandir et feuilleter l'album.</p>
-        
-        <!-- Onglets / Filtres de l'album -->
-        <div class="album-tabs-bar" id="album-filters">
-          <button class="album-tab active" data-cat="all" onclick="filterAlbum('all')">
-            📸 Tout l'album <span class="badge-count" id="count-all">0</span>
-          </button>
-          <button class="album-tab" data-cat="sommets" onclick="filterAlbum('sommets')">
-            ⛰️ Sommets PR1 <span class="badge-count" id="count-sommets">0</span>
-          </button>
-          <button class="album-tab" data-cat="cotes" onclick="filterAlbum('cotes')">
-            🌊 Côtes & Océan <span class="badge-count" id="count-cotes">0</span>
-          </button>
-          <button class="album-tab" data-cat="piscines" onclick="filterAlbum('piscines')">
-            🏊 Piscines Naturelles <span class="badge-count" id="count-piscines">0</span>
-          </button>
-          <button class="album-tab" data-cat="nature" onclick="filterAlbum('nature')">
-            🌿 Levadas & Forêts <span class="badge-count" id="count-nature">0</span>
-          </button>
-          <button class="album-tab" data-cat="villages" onclick="filterAlbum('villages')">
-            🏡 Villages <span class="badge-count" id="count-villages">0</span>
-          </button>
-          <button class="album-tab" data-cat="video" onclick="filterAlbum('video')">
-            🎥 Vidéos <span class="badge-count" id="count-video">0</span>
-          </button>
-        </div>
 
-        <!-- Contrôles et compteurs -->
-        <div class="album-controls-bar">
-          <div id="album-status-text">Chargement des photos...</div>
-          <button class="album-sort-btn" onclick="toggleAlbumSort()" id="album-sort-btn" title="Changer l'ordre d'affichage">
-            ⏱️ Du 9 au 16 Octobre
-          </button>
-        </div>
-      </div>
-      
-      <!-- Grille Polaroids -->
-      <div id="photo-grid" class="polaroid-grid">
-        <div style="text-align:center; padding:50px 20px; color:var(--text-soft); grid-column: 1 / -1;">
-          <div style="font-size:2rem; margin-bottom:10px; animation:float 2s ease-in-out infinite;">📷</div>
-          <div>Ouverture de l'album photo...</div>
-        </div>
-      </div>
-
-      <!-- Pagination / Voir plus -->
-      <div id="album-pagination" class="album-load-more-wrap" style="display:none;">
-        <button class="album-more-btn" onclick="loadMorePhotos()" id="album-more-btn">
-          ✨ Tourner la page (<span id="more-count">36</span> polaroids de plus)
-        </button>
-        <button class="album-show-all-btn" onclick="showAllPhotos()">Voir tous les 307 polaroids</button>
-      </div>
-      
-      <div style="text-align:center; margin-top:28px;">
-        <a href="https://drive.google.com/drive/folders/1bKSJeVb_qGwkJbjIZeUmXumGtC3GHij_?usp=drive_link" target="_blank" style="display:inline-flex; align-items:center; gap:8px; background:var(--card); border:1px solid rgba(0,0,0,0.1); color:var(--accent); padding:10px 22px; border-radius:999px; text-decoration:none; font-size:.8rem; font-weight:700; box-shadow:var(--shadow); transition:all 0.25s var(--ease);">
-          <span>📁</span> Ouvrir le dossier Google Drive original
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Lightbox Carousel interactif -->
-<div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Aperçu photo plein écran">
-  <div class="lb-backdrop" onclick="closeLightbox()"></div>
-  
-  <!-- Top Bar -->
-  <div class="lb-topbar">
-    <div class="lb-counter" id="lb-counter">1 / 307</div>
-    <div class="lb-spot-badge" id="lb-spot-badge">⛰️ Pico Ruivo</div>
-    <div class="lb-actions">
-      <a id="lb-drive-link" href="#" target="_blank" class="lb-btn" title="Ouvrir sur Google Drive">
-        <span>↗</span> Drive
-      </a>
-      <button class="lb-btn lb-close-btn" onclick="closeLightbox()" title="Fermer (Échap)">✕</button>
-    </div>
-  </div>
-
-  <!-- Main Image Stage -->
-  <div class="lb-stage">
-    <button class="lb-nav lb-prev" onclick="prevLightbox(event)" title="Photo précédente (Flèche gauche)" aria-label="Photo précédente">❮</button>
-    
-    <div class="lb-img-wrap" id="lb-img-wrap">
-      <img id="lightbox-img" src="" alt="Photo de voyage">
-      <div id="lb-spinner" class="lb-spinner"></div>
-    </div>
-    
-    <button class="lb-nav lb-next" onclick="nextLightbox(event)" title="Photo suivante (Flèche droite)" aria-label="Photo suivante">❯</button>
-  </div>
-
-  <!-- Bottom Caption & Info -->
-  <div class="lb-bottombar">
-    <div class="lb-info-box">
-      <div class="lb-title" id="lb-title">Pico Ruivo</div>
-      <div class="lb-meta">
-        <span id="lb-location">📍 Madère</span>
-        <span class="lb-sep">•</span>
-        <span id="lb-date">📅 11 Octobre 2026</span>
-      </div>
-    </div>
-    <div class="lb-keyboard-hint">
-      <span>Utilisez ◀ Flèche gauche / droite ▶ pour feuilleter · Glissez sur mobile · Échap pour fermer</span>
-    </div>
-  </div>
-</div>
 
 <!-- ═══ NOTES & COMMENTAIRES ═══ -->
 <section class="notes-section" id="notes">
   <div class="container">
     <div class="notes-card reveal">
-      <h2>💬 Commentaires du groupe</h2>
+      <h2>💬 Le Livre d'Or & Souvenirs du Groupe</h2>
+      <p class="sub" style="margin-bottom:14px; font-size:0.75rem; color:var(--text-soft);">Nos anecdotes, impressions et meilleurs moments de Vincent, Momo et Caro.</p>
       <div class="person-note">
         <label><span class="avatar av-v">V</span> Vincent</label>
         <textarea data-key="comment-vincent" placeholder="Tes remarques, idées, préférences…"></textarea>
@@ -1983,25 +1990,20 @@ function updateBudget() {
   document.getElementById('bChartVal').textContent = Math.round(total / 3).toLocaleString() + ' €';
 }
 
-// ═══ COUNTDOWN ═══
+// ═══ TRIP STATUS (VOYAGE ACCOMPLI) ═══
 function updateCountdown() {
-  const target = new Date("2026-10-09T08:00:00").getTime();
-  const now = new Date().getTime();
-  const diff = target - now;
-  
-  if (diff > 0) {
-    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    
-    document.getElementById('cd-d').textContent = d;
-    document.getElementById('cd-h').textContent = h;
-    document.getElementById('cd-m').textContent = m;
-  } else {
-    document.getElementById('countdown').innerHTML = '<div class="cd-box" style="width:100%;"><span style="font-size:1rem;">C\'est le grand départ ! ✈️</span></div>';
+  // Le voyage est accompli !
+  const cd = document.getElementById('countdown');
+  if (cd && !cd.classList.contains('trip-recap-badges')) {
+    cd.className = 'trip-recap-badges';
+    cd.innerHTML = `
+      <div class="tr-badge"><span>📅</span> 7 Jours de Road-Trip</div>
+      <div class="tr-badge"><span>⛰️</span> Pico Ruivo (1862m)</div>
+      <div class="tr-badge"><span>📸</span> 307 Polaroids & Vidéos</div>
+      <div class="tr-badge"><span>🚗</span> Tour complet de l'île</div>
+    `;
   }
 }
-setInterval(updateCountdown, 60000);
 updateCountdown();
 
 // ═══ TOAST ═══
@@ -2012,7 +2014,7 @@ function showToast() {
 }
 
 // ═══ NAV ═══
-const sIds = ['lodging','budget','east','north','funchal','prep','info','notes'];
+const sIds = ['album','map-section','east','north','funchal','lodging','budget','prep','info','notes'];
 const pills = document.querySelectorAll('.pill');
 function updatePills() {
   let cur = 'lodging';
